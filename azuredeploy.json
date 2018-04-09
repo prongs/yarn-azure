@@ -1,0 +1,404 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "clusterName": {
+            "type": "String",
+            "metadata": {
+                "description": "The name of the Yarn cluster to create."
+            }
+        },
+        "adminUsername": {
+            "type": "String",
+            "metadata": {
+                "description": "These credentials can be used to submit jobs to the cluster and to log into cluster dashboards."
+            }
+        },
+        "adminPassword": {
+            "type": "SecureString",
+            "metadata": {
+                "description": "The password must be at least 10 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter."
+            }
+        },
+        "sshUserName": {
+            "type": "String",
+            "metadata": {
+                "description": "These credentials can be used to remotely access the cluster."
+            }
+        },
+        "sshPassword": {
+            "type": "SecureString",
+            "metadata": {
+                "description": "The password must be at least 10 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter."
+            }
+        },
+        "ubuntuOSVersion": {
+            "defaultValue": "16.04.0-LTS",
+            "allowedValues": [
+                "12.04.5-LTS",
+                "14.04.5-LTS",
+                "15.10",
+                "16.04.0-LTS"
+            ],
+            "type": "String",
+            "metadata": {
+                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
+            }
+        },
+        "addressPrefix": {
+            "defaultValue": "10.0.0.0/16",
+            "type": "String",
+            "metadata": {
+                "description": "Address Prefix"
+            }
+        },
+        "subnetPrefix": {
+            "defaultValue": "10.0.0.0/24",
+            "type": "String",
+            "metadata": {
+                "description": "Subnet prefix"
+            }
+        },
+        "publicIPAddressType": {
+            "defaultValue": "Dynamic",
+            "allowedValues": [
+                "Dynamic",
+                "Static"
+            ],
+            "type": "String",
+            "metadata": {
+                "description": "Type of public IP address"
+            }
+        },
+        "defaultStorageAccountName": {
+            "type": "String",
+            "metadata": {
+                "description": "The short name of the default Azure storage account name. This account needs to be secure transfer enabled."
+            }
+        },
+        "defaultStorageAccountKey": {
+            "type": "String",
+            "metadata": {
+                "description": "The key of the default storage account."
+            }
+        },
+        "defaultContainerName": {
+            "type": "String",
+            "metadata": {
+                "description": "The name of the existing Azure blob storage container."
+            }
+        },
+        "vmSku": {
+            "defaultValue": "Standard_A1",
+            "type": "String",
+            "metadata": {
+                "description": "SKU of Worker nodes."
+            }
+        },
+        "instanceCount": {
+            "defaultValue": 5,
+            "maxValue": 100,
+            "type": "Int",
+            "metadata": {
+                "description": "Initial Number of Worker nodes."
+            }
+        }
+    },
+    "variables": {
+        "imagePublisher": "Canonical",
+        "imageOffer": "UbuntuServer",
+        "subnetName": "[concat(parameters('clusterName'),'-subnet')]",
+        "vmName": "MyUbuntuVM",
+        "vmSize": "Standard_A1",
+        "yarnVMName": "[concat(parameters('clusterName'),'-yarn')]",
+        "yarnNicName": "[concat(variables('yarnVMName'),'-nic')]",
+        "yarnIPConfigName": "[concat(variables('yarnVMName'), '-ipconfig')]",
+        "publicIPAddressName": "[concat(parameters('clusterName'),'-pip')]",
+        "virtualNetworkName": "[concat(parameters('clusterName'),'-vnet')]",
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+        "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
+        "storageAccountType": "Standard_LRS",
+        "osType": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[parameters('ubuntuOSVersion')]",
+            "version": "latest"
+        },
+        "imageReference": "[variables('osType')]",
+        "nodemanagerVMName": "[concat(parameters('clusterName'), '-nodemanager')]",
+        "nodemanagerNicName": "[concat(variables('nodemanagerVMName'),'-nic')]",
+        "nodemanagerIPConfigName": "[concat(variables('nodemanagerVMName'), '-ipconfig')]",
+        "nodemanagerVMAutoscaleName": "[concat(variables('nodemanagerVMName'), '-autoscale')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('publicIPAddressName')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "publicIPAllocationMethod": "[parameters('publicIPAddressType')]",
+                "dnsSettings": {
+                    "domainNameLabel": "[variables('yarnVMName')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('virtualNetworkName')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('subnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnetPrefix')]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[variables('yarnNicName')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "[variables('yarnIPConfigName')]",
+                        "properties": {
+                            "publicIPAddress": {
+                                "id": "[resourceId ('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('yarnVMName')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[variables('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[variables('yarnVMName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('imagePublisher')]",
+                        "offer": "[variables('imageOffer')]",
+                        "sku": "[parameters('ubuntuOSVersion')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "name": "osdisk",
+                        "vhd": {
+                            "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('defaultStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob, 'vhds/', 'osdisk', 11, '.vhd')]"
+                        },
+                        "caching": "ReadWrite"
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('yarnNicName'))]"
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('yarnNicName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('yarnVMName'), '/', 'yarn-install-and-start-script')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "https://gist.github.com/prongs/14de2903b60692a17eda1585cd0876fa/raw/start-yarn.sh"
+                    ],
+                    "commandToExecute": "[concat('bash start-yarn.sh HADOOP_HOST_YARN=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn)]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('yarnVMName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets",
+            "sku": {
+                "name": "[parameters('vmSku')]",
+                "tier": "Standard",
+                "capacity": "[parameters('instanceCount')]"
+            },
+            "name": "[variables('nodemanagerVMName')]",
+            "apiVersion": "2017-03-30",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "overprovision": "true",
+                "upgradePolicy": {
+                    "mode": "Manual"
+                },
+                "virtualMachineProfile": {
+                    "storageProfile": {
+                        "osDisk": {
+                            "createOption": "FromImage"
+                        },
+                        "imageReference": "[variables('imageReference')]"
+                    },
+                    "osProfile": {
+                        "computerNamePrefix": "[variables('nodemanagerVMName')]",
+                        "adminUsername": "[parameters('adminUsername')]",
+                        "adminPassword": "[parameters('adminPassword')]"
+                    },
+                    "networkProfile": {
+                        "networkInterfaceConfigurations": [
+                            {
+                                "name": "[variables('nodemanagerNicName')]",
+                                "properties": {
+                                    "primary": true,
+                                    "ipConfigurations": [
+                                        {
+                                            "name": "[variables('nodemanagerIPConfigName')]",
+                                            "properties": {
+                                                "subnet": {
+                                                    "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('subnetName'))]"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "extensionProfile": {
+                        "extensions": [
+                            {
+                                "name": "runNodemanager",
+                                "properties": {
+                                    "publisher": "Microsoft.Azure.Extensions",
+                                    "type": "CustomScript",
+                                    "typeHandlerVersion": "2.0",
+                                    "autoUpgradeMinorVersion": true,
+                                    "settings": {
+                                        "fileUris": [
+                                            "https://gist.github.com/prongs/14de2903b60692a17eda1585cd0876fa/raw/start-datanode.sh"
+                                        ],
+                                        "commandToExecute": "[concat('bash start-datanode.sh HADOOP_HOST_YARN=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn)]"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Insights/autoscaleSettings",
+            "name": "[variables('nodemanagerVMAutoscaleName')]",
+            "apiVersion": "2015-04-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "name": "[variables('nodemanagerVMAutoscaleName')]",
+                "targetResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('nodemanagerVMName'))]",
+                "enabled": true,
+                "profiles": [
+                    {
+                        "name": "Profile1",
+                        "capacity": {
+                            "minimum": "1",
+                            "maximum": "10",
+                            "default": "1"
+                        },
+                        "rules": [
+                            {
+                                "metricTrigger": {
+                                    "metricName": "Percentage CPU",
+                                    "metricNamespace": "",
+                                    "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('nodemanagerVMName'))]",
+                                    "timeGrain": "PT1M",
+                                    "statistic": "Average",
+                                    "timeWindow": "PT5M",
+                                    "timeAggregation": "Average",
+                                    "operator": "GreaterThan",
+                                    "threshold": 60
+                                },
+                                "scaleAction": {
+                                    "direction": "Increase",
+                                    "type": "ChangeCount",
+                                    "value": "1",
+                                    "cooldown": "PT1M"
+                                }
+                            },
+                            {
+                                "metricTrigger": {
+                                    "metricName": "Percentage CPU",
+                                    "metricNamespace": "",
+                                    "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('nodemanagerVMName'))]",
+                                    "timeGrain": "PT1M",
+                                    "statistic": "Average",
+                                    "timeWindow": "PT5M",
+                                    "timeAggregation": "Average",
+                                    "operator": "LessThan",
+                                    "threshold": 30
+                                },
+                                "scaleAction": {
+                                    "direction": "Decrease",
+                                    "type": "ChangeCount",
+                                    "value": "1",
+                                    "cooldown": "PT5M"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachineScaleSets/', variables('nodemanagerVMName'))]"
+            ]
+        }
+    ],
+    "outputs": {
+        "resourceId": {
+            "type": "String",
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+        },
+        "fqdn": {
+            "type": "String",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn]"
+        }
+    }
+}

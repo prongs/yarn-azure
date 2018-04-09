@@ -1,0 +1,1 @@
+export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:`ls $HADOOP_HOME/share/hadoop/tools/lib/*azure*jar 2>/dev/null | tr "\n" ':' 2>/dev/null`

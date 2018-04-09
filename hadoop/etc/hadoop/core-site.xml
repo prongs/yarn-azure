@@ -1,0 +1,20 @@
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>AZURE_HADOOP_FS</value>
+    <description>NameNode URI</description>
+  </property>
+  <property>
+    <name>fs.AbstractFileSystem.wasb.impl</name>
+    <value>org.apache.hadoop.fs.azure.Wasb</value>
+  </property>
+  <property>
+    <name>fs.azure.account.key.yarntest.blob.core.windows.net</name>
+    <value>AZURE_FS_KEY</value>
+  </property>
+  <property>
+    <name>io.file.buffer.size</name>
+    <value>131072</value>
+  </property>
+</configuration>
+
