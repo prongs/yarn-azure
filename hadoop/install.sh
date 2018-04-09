@@ -1,12 +1,12 @@
 apt-get -y update
-apt-get -y install --no-install-recommends \
+apt-get -y install -y --no-install-recommends \
     apt-transport-https \
     curl wget telnet tar sudo rsync \
     software-properties-common
 
 install_java() {
 	# install java
-	add-apt-repository ppa:openjdk-r/ppa
+	add-apt-repository -y ppa:openjdk-r/ppa
 	apt-get -y update
 	apt-get -y install -y openjdk-8-jdk
 }
@@ -25,4 +25,6 @@ cp configure.sh /usr/local/hadoop/
 cp hadoop-env-with-azure.sh /usr/local/hadoop/
 echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> /usr/local/hadoop/environs.sh
 echo "export HADOOP_HOME=/usr/local/hadoop/" >> /usr/local/hadoop/environs.sh
+echo "export PATH=$PATH:$HADOOP_HOME/bin/"
 source /usr/local/hadoop/environs.sh
+echo "source /usr/local/hadoop/environs.sh" >> ~/.bashrc
