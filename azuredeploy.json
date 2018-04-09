@@ -314,7 +314,7 @@
                                         "fileUris": [
                                             "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
                                         ],
-                                        "commandToExecute": "[concat('bash bootstrap.sh nodemanager YARN_HOST=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn), ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_KEY=', parameters('azureFsKey')]"
+                                        "commandToExecute": "[concat('bash bootstrap.sh nodemanager YARN_HOST=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn, ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_KEY=', parameters('azureFsKey'))]"
                                     }
                                 }
                             }
