@@ -70,19 +70,19 @@
                 "description": "Type of public IP address"
             }
         },
-        "defaultStorageAccountName": {
+        "azureBlobEndpoint": {
             "type": "String",
             "metadata": {
-                "description": "The short name of the default Azure storage account name. This account needs to be secure transfer enabled."
+                "description": "The Azure blob endpoint."
             }
         },
-        "defaultStorageAccountKey": {
+        "azureFsKey": {
             "type": "String",
             "metadata": {
                 "description": "The key of the default storage account."
             }
         },
-        "defaultContainerName": {
+        "azureBlobContainer": {
             "type": "String",
             "metadata": {
                 "description": "The name of the existing Azure blob storage container."
@@ -215,7 +215,7 @@
                         "createOption": "fromImage",
                         "name": "osdisk",
                         "vhd": {
-                            "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('defaultStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob, 'vhds/', 'osdisk', 11, '.vhd')]"
+                            "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('azureBlobEndpoint')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob, 'vhds/', 'osdisk', 27, '.vhd')]"
                         },
                         "caching": "ReadWrite"
                     },
@@ -245,9 +245,9 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://gist.github.com/prongs/14de2903b60692a17eda1585cd0876fa/raw/start-yarn.sh"
+                        "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
                     ],
-                    "commandToExecute": "[concat('bash start-yarn.sh HADOOP_HOST_YARN=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn)]"
+                    "commandToExecute": "[concat('bash bootstrap.sh resourcemanager AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_KEY=', parameters('azureFsKey'))]"
                 }
             },
             "dependsOn": [
@@ -312,9 +312,9 @@
                                     "autoUpgradeMinorVersion": true,
                                     "settings": {
                                         "fileUris": [
-                                            "https://gist.github.com/prongs/14de2903b60692a17eda1585cd0876fa/raw/start-datanode.sh"
+                                            "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
                                         ],
-                                        "commandToExecute": "[concat('bash start-datanode.sh HADOOP_HOST_YARN=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn)]"
+                                        "commandToExecute": "[concat('bash bootstrap.sh nodemanager YARN_HOST=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn), ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_KEY=', parameters('azureFsKey')]"
                                     }
                                 }
                             }

@@ -8,4 +8,4 @@ echo "Starting Job History Server"
 $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
 
 # Keep up
-tail -F /dev/null
+tail -F $HADOOP_HOME/logs/*

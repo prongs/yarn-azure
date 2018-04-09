@@ -5,4 +5,4 @@ echo "Starting Nodemanager"
 $HADOOP_HOME/sbin/yarn-daemon.sh start nodemanager
 
 # Keep up
-tail -F /dev/null
+tail -F $HADOOP_HOME/logs/*
