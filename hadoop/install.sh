@@ -25,6 +25,6 @@ cp configure.sh /usr/local/hadoop/
 cp hadoop-env-with-azure.sh /usr/local/hadoop/
 echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> /usr/local/hadoop/environs.sh
 echo "export HADOOP_HOME=/usr/local/hadoop/" >> /usr/local/hadoop/environs.sh
-echo "export PATH=$PATH:$HADOOP_HOME/bin/"
+echo "export PATH=$PATH:$HADOOP_HOME/bin/" >> /usr/local/hadoop/environs.sh
 source /usr/local/hadoop/environs.sh
 echo "source /usr/local/hadoop/environs.sh" >> ~/.bashrc
