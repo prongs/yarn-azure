@@ -7,3 +7,4 @@ install_and_configure() {
 install_and_configure
 cd $1/
 bash start.sh
+cd ..
