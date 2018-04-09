@@ -3,7 +3,9 @@ source /usr/local/hadoop/environs.sh
 mkdir -p $HADOOP_HOME/etc
 cp -av etc/hadoop $HADOOP_HOME/etc/
 # core-site changes
-sed "s|AZURE_HADOOP_FS|$AZURE_HADOOP_FS|" $HADOOP_CONF_DIR/core-site.xml > $HADOOP_CONF_DIR/core-site.xml.1
+sed "s|AZURE_BLOB_CONTAINER|$AZURE_BLOB_CONTAINER|" $HADOOP_CONF_DIR/core-site.xml > $HADOOP_CONF_DIR/core-site.xml.1
+mv $HADOOP_CONF_DIR/core-site.xml.1 $HADOOP_CONF_DIR/core-site.xml
+sed "s|AZURE_BLOB_ENDPOINT|$AZURE_BLOB_ENDPOINT|" $HADOOP_CONF_DIR/core-site.xml > $HADOOP_CONF_DIR/core-site.xml.1
 mv $HADOOP_CONF_DIR/core-site.xml.1 $HADOOP_CONF_DIR/core-site.xml
 sed "s|AZURE_FS_KEY|$AZURE_FS_KEY|" $HADOOP_CONF_DIR/core-site.xml > $HADOOP_CONF_DIR/core-site.xml.1
 mv $HADOOP_CONF_DIR/core-site.xml.1 $HADOOP_CONF_DIR/core-site.xml
