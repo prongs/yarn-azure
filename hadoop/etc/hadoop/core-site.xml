@@ -13,7 +13,7 @@
     <value>org.apache.hadoop.fs.azure.Wasbs</value>
   </property>
   <property>
-    <name>fs.azure.account.key.AZURE_BLOB_ENDPOINT..blob.core.windows.net</name>
+    <name>fs.azure.account.key.AZURE_BLOB_ENDPOINT.blob.core.windows.net</name>
     <value>AZURE_FS_KEY</value>
   </property>
   <property>
