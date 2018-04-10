@@ -1,7 +1,7 @@
 <configuration>
   <property>
     <name>mapreduce.job.tracker.address</name>
-    <value>YARN_HOSTNAME</value>
+    <value>NODE_HOSTNAME</value>
   </property>
   <property>
     <name>mapreduce.application.classpath</name>
@@ -10,10 +10,6 @@
   <property>
     <name>mapreduce.framework.name</name>
     <value>yarn</value>
-  </property>
-  <property>
-    <name>mapreduce.job.tracker.address</name>
-    <value>NODE_HOSTNAME</value>
   </property>
   <property>
     <name>mapreduce.jobhistory.address</name>
