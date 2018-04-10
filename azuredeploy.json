@@ -102,6 +102,13 @@
             "metadata": {
                 "description": "Initial Number of Worker nodes."
             }
+        },
+        "autoScaleEnabled": {
+            "defaultValue": true,
+            "type": "Boolean",
+            "metadata": {
+                "description": "Enable Autoscale for Worker Nodes?"
+            }
         }
     },
     "variables": {
@@ -215,7 +222,7 @@
                         "createOption": "fromImage",
                         "name": "osdisk",
                         "vhd": {
-                            "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('azureBlobEndpoint')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob, 'vhds/', 'osdisk', 27, '.vhd')]"
+                            "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('azureBlobEndpoint')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob, 'vhds/', 'osdisk', parameters('clusterName'), '.vhd')]"
                         },
                         "caching": "ReadWrite"
                     },
@@ -334,7 +341,7 @@
             "properties": {
                 "name": "[variables('nodemanagerVMAutoscaleName')]",
                 "targetResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('nodemanagerVMName'))]",
-                "enabled": true,
+                "enabled": "[parameters('autoScaleEnabled')]",
                 "profiles": [
                     {
                         "name": "Profile1",

@@ -17,6 +17,10 @@ mv $HADOOP_CONF_DIR/yarn-site.xml.1 $HADOOP_CONF_DIR/yarn-site.xml
 # # mapred-site
 sed s/YARN_HOSTNAME/$YARN_HOSTNAME/ $HADOOP_CONF_DIR/mapred-site.xml > $HADOOP_CONF_DIR/mapred-site.xml.1
 mv $HADOOP_CONF_DIR/mapred-site.xml.1 $HADOOP_CONF_DIR/mapred-site.xml
+
+sed s/NODE_HOSTNAME/$NODE_HOSTNAME/ $HADOOP_CONF_DIR/mapred-site.xml > $HADOOP_CONF_DIR/mapred-site.xml.1
+mv $HADOOP_CONF_DIR/mapred-site.xml.1 $HADOOP_CONF_DIR/mapred-site.xml
+
 # # azure jars
 cat $HADOOP_HOME/hadoop-env-with-azure.sh >> $HADOOP_CONF_DIR/hadoop-env.sh
 HOSTNAME=`hostname`
