@@ -14,4 +14,13 @@ You can test these in local with docker. Just clone and run `test-with-docker.sh
 
 ## Running on Azure
 
-The template asks for a VM for ResourceManager and a VM scale set for NodeManagers. Now, we need the capability to scale the ScaleSet when demand is high. For this, docker turns out to be too convoluted since the service becomes `linux on docker in linux vm`. Also, for autoscaling, installing docker and docker pull are extra steps every VM needs to do to register itself as a node. Fot this reason, deployment on azure happens without docker. A new potential NodeManager needs to install java, download and extract hadoop tar and start service. 
+The template asks for a VM for ResourceManager and a VM scale set for NodeManagers. Now, we need the capability to scale the ScaleSet when demand is high. For this, docker turns out to be too convoluted since the service becomes `linux on docker in linux vm`. Also, for autoscaling, installing docker and docker pull are extra steps every VM needs to do to register itself as a node. Fot this reason, deployment on azure happens without docker. A new potential NodeManager needs to install java, download and extract hadoop tar and start service. Steps: 
+
+* Click on the button above
+* Provide arguments and click `Purchase`
+* Find dns name of resourcemanager machine: This is the `yarn` VM in the deployment
+* `ssh` to that machien
+* `ssh 10.0.0.6`: This is one of the node managers and is a good candidate as a client machine. 
+* `source /usr/local/hadoop/environs.sh`
+* `yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.5.jar pi 5 5` : This should succeed
+* Try increasing `5` to `500` and see the cluster auto scale. 

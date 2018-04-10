@@ -6,6 +6,3 @@ $HADOOP_HOME/sbin/yarn-daemon.sh start resourcemanager
 
 echo "Starting Job History Server"
 $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
-
-# Keep up
-tail -F $HADOOP_HOME/logs/*
