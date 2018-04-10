@@ -3,7 +3,7 @@ source /usr/local/hadoop/environs.sh
 mkdir -p $HADOOP_HOME/etc
 cp -av ../hadoop/etc/hadoop $HADOOP_HOME/etc/ || echo "unable to find ../hadoop/etc/hadoop"
 cp -av etc/hadoop $HADOOP_HOME/etc/ || echo "unable to find ./etc/hadoop"
-
+HOSTNAME=`hostname`
 # core-site changes
 sed "s|AZURE_BLOB_CONTAINER|$AZURE_BLOB_CONTAINER|" $HADOOP_CONF_DIR/core-site.xml > $HADOOP_CONF_DIR/core-site.xml.1
 mv $HADOOP_CONF_DIR/core-site.xml.1 $HADOOP_CONF_DIR/core-site.xml
@@ -14,14 +14,14 @@ mv $HADOOP_CONF_DIR/core-site.xml.1 $HADOOP_CONF_DIR/core-site.xml
 # # yarn-site
 sed s/YARN_HOSTNAME/$YARN_HOSTNAME/ $HADOOP_CONF_DIR/yarn-site.xml > $HADOOP_CONF_DIR/yarn-site.xml.1
 mv $HADOOP_CONF_DIR/yarn-site.xml.1 $HADOOP_CONF_DIR/yarn-site.xml
+sed s/HOSTNAME/$HOSTNAME/ $HADOOP_CONF_DIR/yarn-site.xml > $HADOOP_CONF_DIR/yarn-site.xml.1
+mv $HADOOP_CONF_DIR/yarn-site.xml.1 $HADOOP_CONF_DIR/yarn-site.xml
 # # mapred-site
 sed s/YARN_HOSTNAME/$YARN_HOSTNAME/ $HADOOP_CONF_DIR/mapred-site.xml > $HADOOP_CONF_DIR/mapred-site.xml.1
 mv $HADOOP_CONF_DIR/mapred-site.xml.1 $HADOOP_CONF_DIR/mapred-site.xml
-NODE_HOSTNAME = `hostname`
-sed s/NODE_HOSTNAME/$NODE_HOSTNAME/ $HADOOP_CONF_DIR/mapred-site.xml > $HADOOP_CONF_DIR/mapred-site.xml.1
+sed s/HOSTNAME/$HOSTNAME/ $HADOOP_CONF_DIR/mapred-site.xml > $HADOOP_CONF_DIR/mapred-site.xml.1
 mv $HADOOP_CONF_DIR/mapred-site.xml.1 $HADOOP_CONF_DIR/mapred-site.xml
 
 # # azure jars
 cat $HADOOP_HOME/hadoop-env-with-azure.sh >> $HADOOP_CONF_DIR/hadoop-env.sh
-HOSTNAME=`hostname`
 echo "127.0.0.1 $HOSTNAME" >> /etc/hosts
