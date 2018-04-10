@@ -5,6 +5,15 @@ install_and_configure() {
 }
 
 install_and_configure
-cd $1/
+SERVICE_DIRECTORY="$1"
+shift
+
+# EXPORT rest of the arguments
+for i in "$@"
+do
+   eval "export $i"
+done
+
+cd $SERVICE_DIRECTORY
 bash start.sh
 cd ..
