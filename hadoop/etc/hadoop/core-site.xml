@@ -1,7 +1,7 @@
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>wasb://AZURE_BLOB_CONTAINER@AZURE_BLOB_ENDPOINT</value>
+    <value>wasb://AZURE_BLOB_CONTAINER@AZURE_BLOB_ENDPOINT.blob.core.windows.net</value>
     <description>NameNode URI</description>
   </property>
   <property>
@@ -13,7 +13,7 @@
     <value>org.apache.hadoop.fs.azure.Wasbs</value>
   </property>
   <property>
-    <name>fs.azure.account.key.AZURE_BLOB_ENDPOINT</name>
+    <name>fs.azure.account.key.AZURE_BLOB_ENDPOINT..blob.core.windows.net</name>
     <value>AZURE_FS_KEY</value>
   </property>
   <property>
