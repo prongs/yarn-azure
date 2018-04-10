@@ -4,6 +4,10 @@
 		<value>YARN_HOSTNAME</value>
 	</property>
     <property>
+		<name>yarn.nodemanager.hostname</name>
+		<value>NODE_HOSTNAME</value>
+	</property>
+    <property>
 		<name>yarn.nodemanager.aux-services</name>
 		<value>mapreduce_shuffle</value>
 	</property>
