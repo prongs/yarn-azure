@@ -10,6 +10,7 @@
         },
         "adminUsername": {
             "type": "String",
+            "defaultValue": "platform",
             "metadata": {
                 "description": "These credentials can be used to submit jobs to the cluster and to log into cluster dashboards."
             }
@@ -22,6 +23,7 @@
         },
         "sshUserName": {
             "type": "String",
+            "defaultValue": "platform",
             "metadata": {
                 "description": "These credentials can be used to remotely access the cluster."
             }
@@ -105,7 +107,7 @@
         },
         "autoScaleEnabled": {
             "defaultValue": true,
-            "type": "Boolean",
+            "type": "Bool",
             "metadata": {
                 "description": "Enable Autoscale for Worker Nodes?"
             }
