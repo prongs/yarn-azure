@@ -17,7 +17,7 @@ mv $HADOOP_CONF_DIR/yarn-site.xml.1 $HADOOP_CONF_DIR/yarn-site.xml
 # # mapred-site
 sed s/YARN_HOSTNAME/$YARN_HOSTNAME/ $HADOOP_CONF_DIR/mapred-site.xml > $HADOOP_CONF_DIR/mapred-site.xml.1
 mv $HADOOP_CONF_DIR/mapred-site.xml.1 $HADOOP_CONF_DIR/mapred-site.xml
-$NODE_HOSTNAME = `hostname`
+NODE_HOSTNAME = `hostname`
 sed s/NODE_HOSTNAME/$NODE_HOSTNAME/ $HADOOP_CONF_DIR/mapred-site.xml > $HADOOP_CONF_DIR/mapred-site.xml.1
 mv $HADOOP_CONF_DIR/mapred-site.xml.1 $HADOOP_CONF_DIR/mapred-site.xml
 
