@@ -24,4 +24,4 @@ mv $HADOOP_CONF_DIR/mapred-site.xml.1 $HADOOP_CONF_DIR/mapred-site.xml
 
 # # azure jars
 cat $HADOOP_HOME/hadoop-env-with-azure.sh >> $HADOOP_CONF_DIR/hadoop-env.sh
-echo "127.0.0.1 $HOSTNAME" >> /etc/hosts
+# echo "127.0.0.1 $HOSTNAME" >> /etc/hosts
