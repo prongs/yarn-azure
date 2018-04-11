@@ -111,6 +111,20 @@
             "metadata": {
                 "description": "Enable Autoscale for Worker Nodes?"
             }
+        },
+        "graphiteHost": {
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "Graphite endpoint host name (optional)"
+            }
+        },
+        "graphitePort": {
+            "defaultValue": 2003,
+            "type": "Int",
+            "metadata": {
+                "description": "Graphite endpoint port (optional)"
+            }
         }
     },
     "variables": {
@@ -256,7 +270,7 @@
                     "fileUris": [
                         "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
                     ],
-                    "commandToExecute": "[concat('bash bootstrap.sh resourcemanager AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_KEY=', parameters('azureFsKey'))]"
+                    "commandToExecute": "[concat('bash bootstrap.sh resourcemanager AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'))]"
                 }
             },
             "dependsOn": [
@@ -323,7 +337,7 @@
                                         "fileUris": [
                                             "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
                                         ],
-                                        "commandToExecute": "[concat('bash bootstrap.sh nodemanager NODE_HOSTNAME=0.0.0.0 YARN_HOSTNAME=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn, ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_KEY=', parameters('azureFsKey'))]"
+                                        "commandToExecute": "[concat('bash bootstrap.sh nodemanager NODE_HOSTNAME=0.0.0.0 YARN_HOSTNAME=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn, ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'))]"
                                     }
                                 }
                             }
