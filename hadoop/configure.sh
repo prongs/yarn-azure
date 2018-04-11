@@ -23,8 +23,8 @@ sed s/HOSTNAME/$HOSTNAME/ $HADOOP_CONF_DIR/mapred-site.xml > $HADOOP_CONF_DIR/ma
 mv $HADOOP_CONF_DIR/mapred-site.xml.1 $HADOOP_CONF_DIR/mapred-site.xml
 
 # # METRICS
-if [ -z "$GRAPHITE_HOST" ]; then
-	sed 's/GRAPHITE_HOST/$GRAPHITE_HOST/; s/GRAPHITE_PORT/$GRAPHITE_PORT/' $HADOOP_CONF_DIR/hadoop-metrics2.graphite.properties > $HADOOP_CONF_DIR/hadoop-metrics2.properties
+if [ -n "$GRAPHITE_HOST" ]; then
+	sed 's/GRAPHITE_HOST/'$GRAPHITE_HOST'/; s/GRAPHITE_PORT/'$GRAPHITE_PORT'/' $HADOOP_CONF_DIR/hadoop-metrics2.graphite.properties > $HADOOP_CONF_DIR/hadoop-metrics2.properties
 fi
 # # azure jars
 cat $HADOOP_HOME/hadoop-env-with-azure.sh >> $HADOOP_CONF_DIR/hadoop-env.sh
