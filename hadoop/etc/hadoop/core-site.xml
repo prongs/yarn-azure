@@ -1,7 +1,7 @@
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>wasb://AZURE_BLOB_CONTAINER@AZURE_BLOB_ENDPOINT.blob.core.windows.net</value>
+    <value>AZURE_FS_PROTOCOL://AZURE_BLOB_CONTAINER@AZURE_BLOB_ENDPOINT.blob.core.windows.net</value>
     <description>NameNode URI</description>
   </property>
   <property>

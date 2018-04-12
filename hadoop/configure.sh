@@ -11,6 +11,8 @@ sed "s|AZURE_BLOB_ENDPOINT|$AZURE_BLOB_ENDPOINT|" $HADOOP_CONF_DIR/core-site.xml
 mv $HADOOP_CONF_DIR/core-site.xml.1 $HADOOP_CONF_DIR/core-site.xml
 sed "s|AZURE_FS_KEY|$AZURE_FS_KEY|" $HADOOP_CONF_DIR/core-site.xml > $HADOOP_CONF_DIR/core-site.xml.1
 mv $HADOOP_CONF_DIR/core-site.xml.1 $HADOOP_CONF_DIR/core-site.xml
+sed "s|AZURE_FS_PROTOCOL|$AZURE_FS_PROTOCOL|" $HADOOP_CONF_DIR/core-site.xml > $HADOOP_CONF_DIR/core-site.xml.1
+mv $HADOOP_CONF_DIR/core-site.xml.1 $HADOOP_CONF_DIR/core-site.xml
 # # yarn-site
 sed s/YARN_HOSTNAME/$YARN_HOSTNAME/ $HADOOP_CONF_DIR/yarn-site.xml > $HADOOP_CONF_DIR/yarn-site.xml.1
 mv $HADOOP_CONF_DIR/yarn-site.xml.1 $HADOOP_CONF_DIR/yarn-site.xml
