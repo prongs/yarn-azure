@@ -97,6 +97,17 @@
                 "description": "The name of the existing Azure blob storage container."
             }
         },
+        "deploymentMethod": {
+            "defaultValue": "native",
+            "type": "String",
+            "allowedValues": [
+                "native",
+                "docker"
+            ],
+            "metadata": {
+                "description": "Deployment method: native/docker."
+            }
+        },
         "vmSku": {
             "defaultValue": "Standard_A1",
             "type": "String",
@@ -277,7 +288,7 @@
                     "fileUris": [
                         "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
                     ],
-                    "commandToExecute": "[concat('bash bootstrap.sh resourcemanager AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'))]"
+                    "commandToExecute": "[concat('bash bootstrap.sh ', parameters('deploymentMethod'), ' resourcemanager AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'))]"
                 }
             },
             "dependsOn": [
@@ -344,7 +355,7 @@
                                         "fileUris": [
                                             "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
                                         ],
-                                        "commandToExecute": "[concat('bash bootstrap.sh nodemanager NODE_HOSTNAME=0.0.0.0 YARN_HOSTNAME=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn, ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'))]"
+                                        "commandToExecute": "[concat('bash bootstrap.sh ', parameters('deploymentMethod'), ' nodemanager NODE_HOSTNAME=0.0.0.0 YARN_HOSTNAME=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn, ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'))]"
                                     }
                                 }
                             }
