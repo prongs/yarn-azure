@@ -11,11 +11,14 @@ install_java() {
 	apt-get -y install -y openjdk-8-jdk
 }
 install_hadoop() {
-	wget http://www-eu.apache.org/dist/hadoop/common/hadoop-2.7.5/hadoop-2.7.5.tar.gz
-	tar -xvzf hadoop-2.7.5.tar.gz -C /usr/local/
-	rm -rf hadoop-2.7.5.tar.gz 
+	if [ -z "$HADOOP_VERSION" ]; then 
+		HADOOP_VERSION="2.7.5"
+	fi
+	wget http://www-eu.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
+	tar -xvzf hadoop-$HADOOP_VERSION.tar.gz -C /usr/local/
+	rm -rf hadoop-$HADOOP_VERSION.tar.gz 
 	cd /usr/local
-	ln -s ./hadoop-2.7.5 hadoop
+	ln -s ./hadoop-$HADOOP_VERSION hadoop
 	cd -
 }
 install_java &
