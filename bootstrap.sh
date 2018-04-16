@@ -1,7 +1,7 @@
 apt-get -y update
 DEPLOYMENT_METHOD=$1 # docker/native
 shift
-if [ $DEPLOYMENT_METHOD == "docker" ] then;
+if [ $DEPLOYMENT_METHOD == "docker" ]; then
 	apt-get -y install docker
 	IMAGE=$1
 	shift
