@@ -4,7 +4,6 @@ install_and_configure() {
 	cd ..
 }
 
-install_and_configure
 SERVICE_DIRECTORY="$1"
 shift
 
@@ -13,6 +12,8 @@ for i in "$@"
 do
    eval "export $i"
 done
+
+install_and_configure
 
 cd $SERVICE_DIRECTORY
 bash start.sh
