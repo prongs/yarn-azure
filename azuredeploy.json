@@ -164,7 +164,7 @@
         "imageOffer": "UbuntuServer",
         "subnetName": "[concat(parameters('clusterName'),'-subnet')]",
         "vmName": "MyUbuntuVM",
-        "vmSize": "Standard_A1",
+        "vmSize": "[parameters('vmSku')]",
         "yarnVMName": "[concat(parameters('clusterName'),'-yarn')]",
         "yarnNicName": "[concat(variables('yarnVMName'),'-nic')]",
         "yarnIPConfigName": "[concat(variables('yarnVMName'), '-ipconfig')]",
