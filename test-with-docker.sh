@@ -1,20 +1,14 @@
-for i in "$@" 
+for i in "$@"
 do
    DOCKER_ENV_ARGS="$DOCKER_ENV_ARGS -e $i"
+   DOCKER_BUILD_ARGS="$DOCKER_BUILD_ARGS --build_arg $i"
 done
 platform='unknown'
 unamestr=`uname`
 if [[ "$unamestr" == 'Darwin' ]]; then
    DOCKER_ENV_ARGS="$DOCKER_ENV_ARGS -e YARN_HOSTNAME=docker.for.mac.localhost"
 fi
-cd hadoop/
-docker build -t hadoop-azure-base .
-cd ..
-cd resourcemanager
-docker build -t hadoop-azure-resourcemanager .
-cd ..
-cd nodemanager
-docker build -t hadoop-azure-nodemanager .
+./build_docker_images.sh
 docker network create docker-hadoop-network
 # run the resource manager
 docker run -itd --net=docker-hadoop-network -p 8088:8088 -p 8050:8050 -p 8025:8025 -p 8030:8030 -p 8141:8141 -p 8033:8033 -p 8031:8031 -p 8032:8032 -p 10020:10020 -p 19888:19888 -p 10033:10033 $DOCKER_ENV_ARGS hadoop-azure-resourcemanager

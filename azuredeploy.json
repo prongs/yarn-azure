@@ -122,6 +122,27 @@
                 "description": "Deployment method: native/docker."
             }
         },
+        "dockerRegistryUrl": {
+            "defaultValue": "docker.io",
+            "type": "String",
+            "metadata": {
+                "description": "If deploying via docker, The registry url."
+            }
+        },
+        "dockerRegistryUsername": {
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "If deploying via docker, Username to connect to docker registry."
+            }
+        },
+        "dockerRegistryPassword": {
+            "defaultValue": "",
+            "type": "SecureString",
+            "metadata": {
+                "description": "If deploying via docker, Password to connect to docker registry."
+            }
+        },
         "vmSku": {
             "defaultValue": "Standard_A1",
             "type": "String",
@@ -164,7 +185,7 @@
         "imageOffer": "UbuntuServer",
         "subnetName": "[concat(parameters('clusterName'),'-subnet')]",
         "vmName": "MyUbuntuVM",
-        "vmSize": "[parameters('vmSku')]",
+        "vmSize": "[parameters('vmSk')]",
         "yarnVMName": "[concat(parameters('clusterName'),'-yarn')]",
         "yarnNicName": "[concat(variables('yarnVMName'),'-nic')]",
         "yarnIPConfigName": "[concat(variables('yarnVMName'), '-ipconfig')]",
@@ -302,7 +323,7 @@
                     "fileUris": [
                         "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
                     ],
-                    "commandToExecute": "[concat('bash bootstrap.sh ', parameters('deploymentMethod'), ' resourcemanager AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' HADOOP_VERSION=', parameters('hadoopVersion'))]"
+                    "commandToExecute": "[concat('bash bootstrap.sh ', parameters('deploymentMethod'), ' resourcemanager AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' HADOOP_VERSION=', parameters('hadoopVersion'), , ' DOCKER_REGISTRY_URL=', parameters('dockerRegistryUrl'), , ' DOCKER_REGISTRY_USERNAME=', parameters('dockerRegistryUsername'), , ' DOCKER_REGISTRY_PASSWORD=', parameters('dockerRegistryUsername'))]"
                 }
             },
             "dependsOn": [
@@ -369,7 +390,7 @@
                                         "fileUris": [
                                             "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
                                         ],
-                                        "commandToExecute": "[concat('bash bootstrap.sh ', parameters('deploymentMethod'), ' nodemanager NODE_HOSTNAME=0.0.0.0 YARN_HOSTNAME=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn, ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' HADOOP_VERSION=', parameters('hadoopVersion'))]"
+                                        "commandToExecute": "[concat('bash bootstrap.sh ', parameters('deploymentMethod'), ' nodemanager NODE_HOSTNAME=0.0.0.0 YARN_HOSTNAME=', reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn, ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' HADOOP_VERSION=', parameters('hadoopVersion'), , ' DOCKER_REGISTRY_URL=', parameters('dockerRegistryUrl'), , ' DOCKER_REGISTRY_USERNAME=', parameters('dockerRegistryUsername'), , ' DOCKER_REGISTRY_PASSWORD=', parameters('dockerRegistryUsername'))]"
                                     }
                                 }
                             }
