@@ -2,7 +2,7 @@ apt-get -y update
 DEPLOYMENT_METHOD=$1 # docker/native
 shift
 if [ $DEPLOYMENT_METHOD == "docker" ]; then
-	apt-get -y install docker
+	apt-get -y install docker.io
 	shift
 	bash run_with_docker.sh $@
 else
