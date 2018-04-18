@@ -48,9 +48,9 @@
             }
         },
         "hadoopVersion": {
-            "defaultValue": "2.7.5",
+            "defaultValue": "2.7.6",
             "allowedValues": [
-                "2.7.5",
+                "2.7.6",
                 "2.8.3",
                 "2.9.0",
                 "3.0.1",
