@@ -14,7 +14,7 @@ install_hadoop() {
 	if [ -z "$HADOOP_VERSION" ]; then 
 		HADOOP_VERSION="2.7.5"
 	fi
-	if [-z "$HADOOP_TAR_URL"]; then
+	if [ -z "$HADOOP_TAR_URL" ]; then
 		HADOOP_TAR_URL="http://www-eu.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz"
 	fi
 	wget $HADOOP_TAR_URL
