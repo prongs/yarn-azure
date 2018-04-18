@@ -12,7 +12,8 @@ if [ $DEPLOYMENT_METHOD == "docker" ]; then
 	done
 	docker login $DOCKER_REGISTRY_URL -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
 	docker pull $DOCKER_REGISTRY_URL/$IMAGE
-	docker run -itd $DOCKER_ENV_ARGS $DOCKER_REGISTRY_URL/$IMAGE
+	HOSTNAME=`hostname`
+	docker run --net=host -itd $DOCKER_ENV_ARGS -e HOSTNAME=$HOSTNAME $DOCKER_REGISTRY_URL/$IMAGE
 else
 	apt-get -y install -y git wget curl telnet
 	git clone https://github.com/prongs/yarn-azure.git

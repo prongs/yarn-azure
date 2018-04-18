@@ -3,7 +3,9 @@ source /usr/local/hadoop/environs.sh
 mkdir -p $HADOOP_HOME/etc
 cp -av ../hadoop/etc/hadoop $HADOOP_HOME/etc/ || echo "unable to find ../hadoop/etc/hadoop"
 cp -av etc/hadoop $HADOOP_HOME/etc/ || echo "unable to find ./etc/hadoop"
-HOSTNAME=`hostname`
+if [ -z "$HOSTNAME" ]; then
+	HOSTNAME=`hostname`
+fi
 # core-site changes
 sed "s|AZURE_BLOB_CONTAINER|$AZURE_BLOB_CONTAINER|" $HADOOP_CONF_DIR/core-site.xml > $HADOOP_CONF_DIR/core-site.xml.1
 mv $HADOOP_CONF_DIR/core-site.xml.1 $HADOOP_CONF_DIR/core-site.xml

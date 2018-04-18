@@ -1,11 +1,7 @@
 <configuration>
     <property>
 		<name>yarn.resourcemanager.hostname</name>
-		<value>YARN_HOSTNAME</value>
-	</property>
-    <property>
-		<name>yarn.nodemanager.aux-services</name>
-		<value>mapreduce_shuffle</value>
+		<value>HOSTNAME</value>
 	</property>
 	<property>
 		<name>yarn.scheduler.minimum-allocation-mb</name>
@@ -26,15 +22,5 @@
 		<name>yarn.scheduler.maximum-allocation-vcores</name>
 		<value>2</value>
 		<description>The maximum allocation for every container request at the RM, in terms of virtual CPU cores. Requests higher than this won't take effect, and will get capped to this value.</description>
-	</property>
-	<property>
-		<name>yarn.nodemanager.resource.memory-mb</name>
-		<value>4096</value>
-		<description>Physical memory, in MB, to be made available to running containers</description>
-	</property>
-	<property>
-		<name>yarn.nodemanager.resource.cpu-vcores</name>
-		<value>4</value>
-		<description>Number of CPU cores that can be allocated for containers.</description>
 	</property>
 </configuration>	
