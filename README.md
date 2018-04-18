@@ -22,5 +22,5 @@ The template asks for a VM for ResourceManager and a VM scale set for NodeManage
 * `ssh` to that machien
 * `ssh 10.0.0.6`: This is one of the node managers and is a good candidate as a client machine. 
 * `source /usr/local/hadoop/environs.sh`
-* `yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.5.jar pi 5 5` : This should succeed
+* `yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.6.jar pi 5 5` : This should succeed
 * Try increasing `5` to `500` and see the cluster auto scale. 

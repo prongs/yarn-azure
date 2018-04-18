@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-ARG HADOOP_VERSION=2.7.5
+ARG HADOOP_VERSION=2.7.6
 ARG HADOOP_TAR_URL="http://www-eu.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz"
 COPY configure.sh /
 COPY hadoop-env-with-azure.sh /
