@@ -17,7 +17,7 @@ if [ $DEPLOYMENT_METHOD == "docker" ]; then
 else
 	apt-get -y install -y git wget curl telnet
 	git clone https://github.com/prongs/yarn-azure.git
-	git checkout develop
+	git checkout master
 	cd yarn-azure
 	./run.sh $@
 fi
