@@ -16,5 +16,5 @@ done
 install_and_configure
 
 cd $SERVICE_DIRECTORY
-bash start.sh
+./start.sh
 cd ..
