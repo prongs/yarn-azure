@@ -26,7 +26,8 @@ You can test these in local with docker. Just clone and run `test-with-docker.sh
 
 ## Running on Azure
 
-The template asks for a VM for ResourceManager and a VM scale set for NodeManagers. Now, we need the capability to scale the ScaleSet when demand is high. For this, docker turns out to be too convoluted since the service becomes `linux on docker in linux vm`. Also, for autoscaling, installing docker and docker pull are extra steps every VM needs to do to register itself as a node. Fot this reason, deployment on azure happens without docker. A new potential NodeManager needs to install java, download and extract hadoop tar and start service. Steps: 
+### Native mode
+In this mode, Software installation is done directly on the virtual machines, i.e. `apt-get install java ...` and `wget hadoop.tar`. This mode is easy to work with to quickly fork off a cluster. The version of hadoop to use is configurable. Quickstart:
 
 * Click on the button above
 * Provide arguments and click `Purchase`
@@ -36,3 +37,11 @@ The template asks for a VM for ResourceManager and a VM scale set for NodeManage
 * `source /usr/local/hadoop/environs.sh`
 * `yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.6.jar pi 5 5` : This should succeed
 * Try increasing `5` to `500` and see the cluster auto scale. 
+
+
+### Docker mode
+In this mode, we obtain VMs from Azure and install `docker` on them. Then, each machine pulls a specific docker image and starts the docker container. 
+The docker images need to be built and pushed first. For this, you need an `Azure Container Registry`. Once you have that, you can run `./build_docker_images.sh $CONTAINER_REGISTRY_URL [$CONTAINER_REGISTRY_USERNAME [$CONTAINER_REGISTRY_PASSWORD]] $BUILD_ARGS`, where `BUILD_ARGS` is a list of arguments of type `A=B`, these will be passed as build arguments while building the docker images. The build args currently supported are `HADOOP_VERSION` and `HADOOP_TAR_URL`. Basically you can build docker images with your custom version of hadoop by specifying a custom tar url and corresponding version number. The script takes care of building the images and pushing them with pre-defined names. The name resolution for which image to pull is then done on install time. 
+
+
+
