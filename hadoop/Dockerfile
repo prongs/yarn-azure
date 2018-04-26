@@ -8,3 +8,7 @@ ENV HADOOP_VERSION=$HADOOP_VERSION
 ENV HADOOP_TAR_URL=$HADOOP_TAR_URL
 RUN bash /install.sh
 COPY etc /etc
+RUN echo 'source /usr/local/hadoop/environs.sh' >> ~/.bashrc
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV HADOOP_HOME=/usr/local/hadoop/
+ENV PATH "${PATH}:$HADOOP_HOME/bin/"

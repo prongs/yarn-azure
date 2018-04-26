@@ -1,4 +1,4 @@
-echo "export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop/" >> /usr/local/hadoop/environs.sh
+echo 'export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop/' >> /usr/local/hadoop/environs.sh
 source /usr/local/hadoop/environs.sh
 mkdir -p $HADOOP_HOME/etc
 cp -av ../hadoop/etc/hadoop $HADOOP_HOME/etc/ || echo "unable to find ../hadoop/etc/hadoop"

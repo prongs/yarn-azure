@@ -1,14 +1,14 @@
 apt-get -y update
 apt-get -y install -y --no-install-recommends \
     apt-transport-https \
-    curl wget telnet tar sudo rsync \
+    curl wget tar \
     software-properties-common
 
 install_java() {
 	# install java
 	add-apt-repository -y ppa:openjdk-r/ppa
 	apt-get -y update
-	apt-get -y install -y openjdk-8-jdk
+	apt-get -y install -y openjdk-8-jdk zip unzip telnet sudo rsync
 }
 install_hadoop() {
 	if [ -z "$HADOOP_VERSION" ]; then 
@@ -29,8 +29,8 @@ install_hadoop
 wait
 cp configure.sh /usr/local/hadoop/
 cp hadoop-env-with-azure.sh /usr/local/hadoop/
-echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> /usr/local/hadoop/environs.sh
-echo "export HADOOP_HOME=/usr/local/hadoop/" >> /usr/local/hadoop/environs.sh
-echo "export PATH=$PATH:/usr/local/hadoop/bin/" >> /usr/local/hadoop/environs.sh
+echo 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64' >> /usr/local/hadoop/environs.sh
+echo 'export HADOOP_HOME=/usr/local/hadoop/' >> /usr/local/hadoop/environs.sh
+echo 'export PATH=$PATH:/usr/local/hadoop/bin/' >> /usr/local/hadoop/environs.sh
 source /usr/local/hadoop/environs.sh
-echo "source /usr/local/hadoop/environs.sh" >> ~/.bashrc
+echo 'source /usr/local/hadoop/environs.sh' >> ~/.bashrc
