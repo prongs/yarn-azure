@@ -122,6 +122,13 @@
                 "description": "Space separated docker images to run on this VM"
             }
         },
+        "dockerEnvironment": {
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "space separated environment `key=value` list for docker images to have as environment variables."
+            }
+        },
         "vmSku": {
             "defaultValue": "Standard_A1",
             "type": "String",
