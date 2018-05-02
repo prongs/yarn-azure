@@ -9,8 +9,8 @@
             }
         },
         "adminUsername": {
-            "type": "String",
             "defaultValue": "platform",
+            "type": "String",
             "metadata": {
                 "description": "These credentials can be used to submit jobs to the cluster and to log into cluster dashboards."
             }
@@ -22,8 +22,8 @@
             }
         },
         "sshUserName": {
-            "type": "String",
             "defaultValue": "platform",
+            "type": "String",
             "metadata": {
                 "description": "These credentials can be used to remotely access the cluster."
             }
@@ -71,8 +71,8 @@
             }
         },
         "azureFsProtocol": {
-            "type": "String",
             "defaultValue": "wasb",
+            "type": "String",
             "metadata": {
                 "description": "The Azure FS protocol: wasb/wasbs."
             }
@@ -159,7 +159,7 @@
         "vmName": "[parameters('vmName')]",
         "nicName": "[concat(variables('vmName'),'-nic')]",
         "ipConfigName": "[concat(variables('vmName'), '-ipconfig')]",
-        "publicIPAddressName": "[concat(parameters('clusterName'),'-pip')]",
+        "publicIPAddressName": "[concat(parameters('vmName'),'-pip')]",
         "virtualNetworkName": "[parameters('virtualNetworkName')]",
         "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
         "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
@@ -207,7 +207,6 @@
                 ]
             },
             "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
                 "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
             ]
         },
@@ -268,7 +267,7 @@
                     "fileUris": [
                         "http://raw.githubusercontent.com/prongs/yarn-azure/develop/bootstrap.sh"
                     ],
-                    "commandToExecute": "[concat('bash bootstrap.sh ', parameters('dockerImagesToRun'), 'AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' DOCKER_REGISTRY_URL=', parameters('dockerRegistryUrl'), ' DOCKER_REGISTRY_USERNAME=', parameters('dockerRegistryUsername'), ' DOCKER_REGISTRY_PASSWORD=', parameters('dockerRegistryPassword'))]"
+                    "commandToExecute": "[concat('bash bootstrap.sh docker ', parameters('dockerImagesToRun'), ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' DOCKER_REGISTRY_URL=', parameters('dockerRegistryUrl'), ' DOCKER_REGISTRY_USERNAME=', parameters('dockerRegistryUsername'), ' DOCKER_REGISTRY_PASSWORD=', parameters('dockerRegistryPassword'), ' ', parameters('dockerEnvironment'))]"
                 }
             },
             "dependsOn": [

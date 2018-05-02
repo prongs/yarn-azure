@@ -8,7 +8,9 @@ install_java() {
 	# install java
 	add-apt-repository -y ppa:openjdk-r/ppa
 	apt-get -y update
-	apt-get -y install -y openjdk-8-jdk zip unzip telnet sudo rsync mysql-client
+	apt-get -y install -y openjdk-8-jdk 
+	apt-get -y install -y zip unzip telnet sudo rsync
+	apt-get -y install -y mysql-client
 }
 install_hadoop() {
 	if [ -z "$HADOOP_VERSION" ]; then 
@@ -35,3 +37,4 @@ echo 'export HADOOP_HOME=/usr/local/hadoop/' >> /usr/local/hadoop/environs.sh
 echo 'export PATH=$PATH:/usr/local/hadoop/bin/' >> /usr/local/hadoop/environs.sh
 source /usr/local/hadoop/environs.sh
 echo 'source /usr/local/hadoop/environs.sh' >> /etc/profile
+java -version
