@@ -2,15 +2,15 @@ apt-get -y update
 DEPLOYMENT_METHOD=$1 # docker/native
 shift
 if [ $DEPLOYMENT_METHOD == "docker" ]; then
-	apt-get -y install docker.io
+	apt-get -y update && apt-get -y install docker.io
 	declare -a images
 	for i in "$@"
 	do
 		if [[ $i != *"="* ]]; then 
+   			images=("${images[@]}" "hadoop-azure-$i")
+		else
 			DOCKER_ENV_ARGS="$DOCKER_ENV_ARGS -e $i"
    			eval "export $i"
-		else
-			images=("${images[@]}" "hadoop-azure-$i")
 		fi
 	done
 	docker login $DOCKER_REGISTRY_URL -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD

@@ -19,3 +19,12 @@ echo "CREATE DATABASE IF NOT EXISTS falcon;" > create.sql
 echo "before mysql"
 mysql -h $MYSQL_HOST --port=$MYSQL_PORT --user=$FALCON_DB_USERNAME --password=$FALCON_DB_PASSWORD < create.sql
 echo "after mysql"
+
+sed -i 's/AZURE_FS_PROTOCOL/'$AZURE_FS_PROTOCOL'/' /cluster-local.xml
+sed -i 's/AZURE_BLOB_CONTAINER/'$AZURE_BLOB_CONTAINER'/' /cluster-local.xml
+sed -i 's/AZURE_BLOB_ENDPOINT/'$AZURE_BLOB_ENDPOINT'/' /cluster-local.xml
+sed -i 's/RM_HOST/'$RM_HOST'/' /cluster-local.xml
+if [ -z "$RM_PORT" ]; then
+	RM_PORT=8032
+fi
+sed -i 's/RM_PORT/'$RM_PORT'/' /cluster-local.xml

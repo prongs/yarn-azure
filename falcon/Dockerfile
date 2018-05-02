@@ -6,17 +6,28 @@ ENV MERLIN_DEB_URL $MERLIN_DEB_URL
 ENV FALCON_HOME /usr/local/lib/falcon
 COPY install.sh /
 RUN bash -x /install.sh
+
 RUN wget $MERLIN_DEB_URL
+
+
+RUN echo '\
+        . /etc/profile ; \
+    ' >> /merlin/.profile
+
+
 RUN dpkg -i merlin*falcon*deb
 RUN rm -rf merlin*falcon*deb
 
 COPY statestore.properties $FALCON_HOME/conf/
 COPY statestore.credentials $FALCON_HOME/conf/
 COPY configure.sh /
+COPY cluster-local.xml /cluster-local.xml
 COPY start.sh /
 # RUN rm -rf $FALCON_HOME/server/webapp/falcon/WEB-INF/lib/mysql-connector-java-*.jar
 RUN rm -rf $FALCON_HOME/client/lib/mysql-connector-java-*jar
-# COPY mysql-connector-java-5.1.22.jar $FALCON_HOME/server/webapp/falcon/WEB-INF/lib/mysql-connector-java-5.1.22.jar
 COPY mysql-connector-java-5.1.22.jar $FALCON_HOME/client/lib/mysql-connector-java-5.1.22.jar
 ENV FALCON_DOMAIN production
+ENV FALCON_URL https://localhost:15443/
+
+RUN falcon entity -type cluster -submit -file /cluster-local.xml
 ENTRYPOINT bash -x /start.sh

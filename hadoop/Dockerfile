@@ -12,3 +12,9 @@ RUN echo 'source /usr/local/hadoop/environs.sh' >> /etc/profile
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV HADOOP_HOME=/usr/local/hadoop/
 ENV PATH "${PATH}:$HADOOP_HOME/bin/"
+
+RUN echo '\
+        . /etc/profile ; \
+    ' >> /root/.profile
+
+COPY mysql-connector-java-5.1.22.jar $OOZIE_CURRENT/libext/mysql-connector-java-5.1.22.jar 
