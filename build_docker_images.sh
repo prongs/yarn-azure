@@ -27,13 +27,14 @@ docker build $DOCKER_BUILD_ARGS -t hadoop-azure-base hadoop
 docker_push hadoop-azure-base &
 docker build $DOCKER_BUILD_ARGS -t hadoop-azure-resourcemanager resourcemanager
 docker build $DOCKER_BUILD_ARGS -t hadoop-azure-nodemanager nodemanager
-# wait
-# docker_push hadoop-azure-resourcemanager &
-# docker_push hadoop-azure-nodemanager &
-# wait
+wait
+docker_push hadoop-azure-resourcemanager &
+docker_push hadoop-azure-nodemanager
+wait
 
 docker build $DOCKER_BUILD_ARGS -t hadoop-oozie oozie
-docker_push hadoop-oozie
+docker_push hadoop-oozie &
 
-#docker build $DOCKER_BUILD_ARGS -t hadoop-falcon falcon
-#docker_push hadoop-falcon
+docker build $DOCKER_BUILD_ARGS -t hadoop-falcon falcon
+docker_push hadoop-falcon
+wait

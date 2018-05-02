@@ -8,7 +8,7 @@ install_java() {
 	# install java
 	add-apt-repository -y ppa:openjdk-r/ppa
 	apt-get -y update
-	apt-get -y install -y openjdk-8-jdk zip unzip telnet sudo rsync
+	apt-get -y install -y openjdk-8-jdk zip unzip telnet sudo rsync mysql-client
 }
 install_hadoop() {
 	if [ -z "$HADOOP_VERSION" ]; then 
@@ -27,10 +27,11 @@ install_hadoop() {
 install_java &
 install_hadoop
 wait
+
 cp configure.sh /usr/local/hadoop/
 cp hadoop-env-with-azure.sh /usr/local/hadoop/
 echo 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64' >> /usr/local/hadoop/environs.sh
 echo 'export HADOOP_HOME=/usr/local/hadoop/' >> /usr/local/hadoop/environs.sh
 echo 'export PATH=$PATH:/usr/local/hadoop/bin/' >> /usr/local/hadoop/environs.sh
 source /usr/local/hadoop/environs.sh
-echo 'source /usr/local/hadoop/environs.sh' >> ~/.bashrc
+echo 'source /usr/local/hadoop/environs.sh' >> /etc/profile
