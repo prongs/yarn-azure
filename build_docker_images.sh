@@ -32,9 +32,9 @@ docker_push hadoop-azure-resourcemanager &
 docker_push hadoop-azure-nodemanager
 wait
 
-docker build $DOCKER_BUILD_ARGS -t hadoop-oozie oozie
-docker_push hadoop-oozie &
+docker build $DOCKER_BUILD_ARGS -t hadoop-azure-oozie oozie
+docker_push hadoop-azure-oozie &
 
-docker build $DOCKER_BUILD_ARGS -t hadoop-falcon falcon
-docker_push hadoop-falcon
+docker build $DOCKER_BUILD_ARGS -t hadoop-azure-falcon falcon
+docker_push hadoop-azure-falcon
 wait
