@@ -17,4 +17,4 @@ RUN echo '\
         . /etc/profile ; \
     ' >> /root/.profile
 
-COPY mysql-connector-java-5.1.22.jar $OOZIE_CURRENT/libext/mysql-connector-java-5.1.22.jar 
+COPY mysql-connector-java-5.1.22.jar /mysql-connector-java-5.1.22.jar 
