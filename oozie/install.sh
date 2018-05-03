@@ -1,7 +1,7 @@
 useradd -ms /bin/bash oozie
 echo '\
         . /etc/profile ; \
-    ' >> /oozie/.profile
+    ' >> ~oozie/.profile
 mkdir -p /etc/default/
 wget $OOZIE_DEB_URL || exit 127
 dpkg -i oozie*deb

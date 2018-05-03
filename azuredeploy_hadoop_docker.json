@@ -267,7 +267,7 @@
                     "fileUris": [
                         "http://raw.githubusercontent.com/prongs/yarn-azure/develop/bootstrap.sh"
                     ],
-                    "commandToExecute": "[concat('bash bootstrap.sh docker ', parameters('dockerImagesToRun'), ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' DOCKER_REGISTRY_URL=', parameters('dockerRegistryUrl'), ' DOCKER_REGISTRY_USERNAME=', parameters('dockerRegistryUsername'), ' DOCKER_REGISTRY_PASSWORD=', parameters('dockerRegistryPassword'), ' ', parameters('dockerEnvironment'))]"
+                    "commandToExecute": "[concat('bash -x bootstrap.sh docker ', parameters('dockerImagesToRun'), ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' DOCKER_REGISTRY_URL=', parameters('dockerRegistryUrl'), ' DOCKER_REGISTRY_USERNAME=', parameters('dockerRegistryUsername'), ' DOCKER_REGISTRY_PASSWORD=', parameters('dockerRegistryPassword'), ' ', parameters('dockerEnvironment'))]"
                 }
             },
             "dependsOn": [

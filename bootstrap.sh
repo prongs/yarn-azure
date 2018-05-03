@@ -15,8 +15,11 @@ if [ $DEPLOYMENT_METHOD == "docker" ]; then
 	done
 	docker login $DOCKER_REGISTRY_URL -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
 	HOSTNAME=`hostname`
+	echo "Images to pull: ${images[@]}"
+	echo $images
 	for IMAGE in "${images[@]}"
 	do
+		echo "$IMAGE"
 		docker pull $DOCKER_REGISTRY_URL/$IMAGE
 		docker run --net=host -itd $DOCKER_ENV_ARGS -e HOSTNAME=$HOSTNAME $DOCKER_REGISTRY_URL/$IMAGE
 	done

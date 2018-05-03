@@ -1,13 +1,13 @@
 useradd -ms /bin/bash falcon
 echo '\
         . /etc/profile ; \
-    ' >> /falcon/.profile
+    ' >> ~falcon/.profile
 
 useradd -ms /bin/bash merlin
 
 echo '\
         . /etc/profile ; \
-    ' >> /merlin/.profile
+    ' >> ~merlin/.profile
 
 wget $FALCON_DEB_URL
 dpkg -i *falcon*deb
