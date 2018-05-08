@@ -13,7 +13,7 @@ if [ -z "$FALCON_HOME" ]; then
 fi
 ln -s /usr/local/lib/apache-*-falcon $FALCON_HOME
 echo 'export PATH=$PATH:$FALCON_HOME/bin/' >> /etc/profile
-
+rm -rf $FALCON_HOME/client/lib/hadoop*2.6*.jar
 # install merlin
 
 useradd -ms /bin/bash merlin

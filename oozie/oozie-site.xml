@@ -127,7 +127,7 @@
 
     <property>
         <name>oozie.service.JPAService.create.db.schema</name>
-        <value>false</value>
+        <value>true</value>
         <description>
             Creates Oozie DB.
 
@@ -146,7 +146,7 @@
 
     <property>
         <name>oozie.service.JPAService.jdbc.url</name>
-        <value>jdbc:mysql://MYSQL_HOST:MYSQL_PORT/oozie?useSSL=true</value>
+        <value>jdbc:mysql://MYSQL_HOST:MYSQL_PORT/oozie?serverTimezone=UTC&amp;useSSL=true&amp;requireSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;ssl=require&amp;encrypt=true&amp;autoReconnect=true</value>
         <description>
             JDBC URL.
         </description>

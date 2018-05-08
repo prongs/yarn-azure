@@ -10,9 +10,47 @@ rm -rf $FALCON_HOME/server/webapp/falcon/WEB-INF/lib/mysql-connector-java-*jar
 rm -rf $FALCON_HOME/server/webapp/prism/WEB-INF/lib/mysql-connector-java-*jar
 cp $FALCON_HOME/client/lib/mysql-connector-java-5.1.22.jar $FALCON_HOME/server/webapp/falcon/WEB-INF/lib/mysql-connector-java-5.1.22.jar
 cp $FALCON_HOME/client/lib/mysql-connector-java-5.1.22.jar $FALCON_HOME/server/webapp/prism/WEB-INF/lib/mysql-connector-java-5.1.22.jar
-$FALCON_HOME/bin/falcon-start
-$FALCON_HOME/bin/prism-start
-sleep 5
+cd $FALCON_HOME
+# export FALCON_DOMAIN=falcon
+bin/falcon-start
+
+echo "Waiting falcon to launch"
+while ! nc -z localhost 15443; do   
+  sleep 1
+done
+echo "falcon launched"
+# sleep 10
+# export FALCON_DOMAIN=prism
+bin/prism-start
+
+echo "Waiting prism to launch"
+
+while ! nc -z localhost 16443; do   
+  sleep 1
+done
+echo "prism launched"
+# sleep 10
 echo "Submitting local cluster."
+. /etc/profile
+echo 'PATH="'$PATH'"' > /etc/environment
+alias sudo='sudo env PATH=$PATH'
+hadoop fs -mkdir /projects/falcon
+hadoop fs -mkdir /projects/falcon/working
+hadoop fs -mkdir /projects/falcon/staging
+hadoop fs -chmod 777 /projects/falcon/staging
+
 falcon entity -type cluster -submit -file /cluster-local.xml
+echo "Submitted local cluster"
+
+echo "Installing merlin"
+cd /
+userdel merlin && rm -rf /home/merlin && useradd -ms /bin/bash merlin && echo "merlin:merlin" | chpasswd && adduser merlin sudo && echo '. /etc/profile;' >> ~merlin/.profile
+
+dpkg -i merlin*falcon*deb
+FS=$(hdfs getconf -confKey fs.defaultFS)
+echo $FS
+sleep 10
+# 3 retries to register
+falcon extension -register -extensionName merlin -path $FS/projects/merlin/extension || falcon extension -register -extensionName merlin -path $FS/projects/merlin/extension || falcon extension -register -extensionName merlin -path $FS/projects/merlin/extension 
+
 tail -F /usr/local/lib/falcon/logs/*

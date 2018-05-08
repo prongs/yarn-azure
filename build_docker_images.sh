@@ -36,6 +36,6 @@ docker build $DOCKER_BUILD_ARGS -t hadoop-azure-oozie oozie
 docker_push hadoop-azure-oozie &
 
 docker build $DOCKER_BUILD_ARGS -t hadoop-azure-falcon falcon
-wait
-docker_push hadoop-azure-falcon
 # wait
+docker_push hadoop-azure-falcon
+wait
