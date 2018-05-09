@@ -39,6 +39,13 @@ hadoop fs -mkdir /projects/falcon/working
 hadoop fs -mkdir /projects/falcon/staging
 hadoop fs -chmod 777 /projects/falcon/staging
 
+echo "Waiting for oozie to launch"
+while ! nc -z localhost 11000; do   
+  sleep 1
+done
+echo "oozie launched"
+
+
 falcon entity -type cluster -submit -file /cluster-local.xml
 echo "Submitted local cluster"
 

@@ -19,9 +19,11 @@ if [ $DEPLOYMENT_METHOD == "docker" ]; then
 	echo $images
 	for IMAGE in "${images[@]}"
 	do
-		echo "$IMAGE"
+		echo "Downloading $IMAGE"
 		docker pull $DOCKER_REGISTRY_URL/$IMAGE
+		echo "Downloaded $IMAGE"
 		docker run --net=host -itd $DOCKER_ENV_ARGS -e HOSTNAME=$HOSTNAME $DOCKER_REGISTRY_URL/$IMAGE
+		echo "Started image $IMAGE"
 	done
 else
 	apt-get -y install -y git wget curl telnet

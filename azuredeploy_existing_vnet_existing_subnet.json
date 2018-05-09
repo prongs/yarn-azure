@@ -265,7 +265,12 @@
                         "version": "latest"
                     },
                     "osDisk": {
-                        "createOption": "FromImage",
+                        "createOption": "fromImage",
+                        "name": "osdisk",
+                        "vhd": {
+                            "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', parameters('azureBlobEndpoint')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob, 'vhds/', 'osdisk', parameters('clusterName'), '.vhd')]"
+                        },
+                        "caching": "ReadWrite"
                     },
                     "dataDisks": []
                 },
@@ -278,7 +283,7 @@
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', variables('yarnNicName'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', variables('yarnNicName'))]"
             ]
         },
         {
