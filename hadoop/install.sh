@@ -9,9 +9,8 @@ install_java() {
 	add-apt-repository -y ppa:openjdk-r/ppa
 	apt-get -y update
 	
-	apt-get -y install -y openjdk-8-jdk 
-	apt-get -y install -y zip unzip telnet sudo rsync netcat
-	apt-get -y install -y mysql-client vim
+	apt-get -y install -y zip unzip telnet sudo rsync netcat iputils-ping
+	apt-get -y install -y openjdk-8-jdk mysql-client vim
 }
 install_hadoop() {
 	if [ -z "$HADOOP_VERSION" ]; then 
