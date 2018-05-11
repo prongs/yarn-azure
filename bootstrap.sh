@@ -2,7 +2,7 @@ apt-get -y update
 DEPLOYMENT_METHOD=$1 # docker/native
 shift
 # Workaround
-echo "127.0.0.1 `hostname`" >> /etc/hosts
+# echo "127.0.0.1 `hostname`" >> /etc/hosts
 
 if [ $DEPLOYMENT_METHOD == "docker" ]; then
 	apt-get -y update && apt-get -y install docker.io
