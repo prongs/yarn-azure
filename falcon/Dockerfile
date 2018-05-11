@@ -11,7 +11,7 @@ RUN wget $MERLIN_DEB_URL
 COPY statestore.properties $FALCON_HOME/conf/
 COPY statestore.credentials $FALCON_HOME/conf/
 COPY startup.properties $FALCON_HOME/conf/
-COPY configure.sh /
+COPY configure.sh /usr/local/hadoop/configure.sh
 COPY cluster-local.xml /cluster-local.xml
 COPY start.sh /
 # RUN rm -rf $FALCON_HOME/server/webapp/falcon/WEB-INF/lib/mysql-connector-java-*.jar

@@ -30,8 +30,6 @@ install_java &
 install_hadoop
 wait
 
-cp configure.sh /usr/local/hadoop/
-cp hadoop-env-with-azure.sh /usr/local/hadoop/
 echo 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64' >> /usr/local/hadoop/environs.sh
 echo 'export HADOOP_HOME=/usr/local/hadoop/' >> /usr/local/hadoop/environs.sh
 echo 'export PATH=$PATH:/usr/local/hadoop/bin/' >> /usr/local/hadoop/environs.sh

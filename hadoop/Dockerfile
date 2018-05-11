@@ -5,8 +5,8 @@ ENV HADOOP_VERSION=$HADOOP_VERSION
 ENV HADOOP_TAR_URL=$HADOOP_TAR_URL
 COPY install.sh /
 RUN bash /install.sh
-COPY configure.sh /
-COPY hadoop-env-with-azure.sh /
+COPY configure.sh /usr/local/hadoop/configure.sh
+COPY hadoop-env-with-azure.sh /usr/local/hadoop/hadoop-env-with-azure.sh
 COPY etc /etc
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV HADOOP_HOME=/usr/local/hadoop/

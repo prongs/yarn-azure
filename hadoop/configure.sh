@@ -24,4 +24,3 @@ if [ -n "$GRAPHITE_HOST" ]; then
 fi
 # # azure jars
 cat $HADOOP_HOME/hadoop-env-with-azure.sh >> $HADOOP_CONF_DIR/hadoop-env.sh
-echo "127.0.0.1 `hostname`" >> /etc/hosts
