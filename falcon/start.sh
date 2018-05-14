@@ -38,6 +38,7 @@ hadoop fs -mkdir /projects/falcon
 hadoop fs -mkdir /projects/falcon/working
 hadoop fs -mkdir /projects/falcon/staging
 hadoop fs -chmod 777 /projects/falcon/staging
+hadoop fs -chown -R root  /projects/falcon/
 
 echo "Waiting for oozie to launch"
 while ! nc -z localhost 11000; do   
@@ -45,9 +46,6 @@ while ! nc -z localhost 11000; do
 done
 echo "oozie launched"
 
-
-falcon entity -type cluster -submit -file /cluster-local.xml
-echo "Submitted local cluster"
 
 echo "Installing merlin"
 cd /
@@ -59,5 +57,17 @@ echo $FS
 sleep 10
 # 3 retries to register
 falcon extension -register -extensionName merlin -path $FS/projects/merlin/extension || falcon extension -register -extensionName merlin -path $FS/projects/merlin/extension || falcon extension -register -extensionName merlin -path $FS/projects/merlin/extension 
+
+# Submit initial entities
+echo "Submitting entities"
+for file in /entities/clusters/*xml
+do
+	falcon entity -type cluster -submit -file $file
+done
+
+for file in /entities/feeds/*xml
+do
+	falcon entity -type feed -submit -file $file
+done
 
 tail -F /usr/local/lib/falcon/logs/*

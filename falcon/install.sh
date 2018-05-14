@@ -23,5 +23,3 @@ echo '\
     ' >> ~merlin/.profile
 
 wget $MERLIN_DEB_URL
-dpkg -i merlin*falcon*deb
-rm -rf merlin*falcon*deb

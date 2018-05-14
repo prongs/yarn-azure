@@ -20,5 +20,21 @@
     <name>io.file.buffer.size</name>
     <value>131072</value>
   </property>
+  <property>
+    <name>hadoop.proxyuser.oozie.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.oozie.groups</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.falcon.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.falcon.groups</name>
+    <value>*</value>
+  </property>
 </configuration>
 

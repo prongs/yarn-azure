@@ -1,5 +1,5 @@
 export OOZIE_CURRENT=/usr/local/oozie-current/
-export OOZIE_BASE=/usr/local/oozie/
+export OOZIE_BASE=/usr/local/
 export EXTJS_URL=
 export MYSQL_CONNECTOR_JAR=
 export NAMENODE=`hdfs getconf -confKey fs.defaultFS`
