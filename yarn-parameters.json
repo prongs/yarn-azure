@@ -1,0 +1,74 @@
+{
+  "location": {
+    "value": "eastus2"
+  },
+  "clusterName": {
+    "value": "iad2-preprod-cluster-29"
+  },
+  "adminUsername": {
+    "value": "idsp"
+  },
+  "adminPassword": {
+    "value": "Password@123"
+  },
+  "ubuntuOSVersion": {
+    "value": "16.04.0-LTS"
+  },
+  "existingVNETRGName": {
+    "value": "network-rg-iad2-preprod"
+  },
+  "existingVNETName": {
+    "value": "vnet-iad2-preprod"
+  },
+  "existingSubnetName": {
+    "value": "evserv-subnet-iad2-preprod"
+  },
+  "azureFsProtocol": {
+    "value": "wasbs"
+  },
+  "azureBlobResourceGroup": {
+    "value": "dsp-devops"
+  },
+  "azureBlobEndpoint": {
+    "value": "idspblob"
+  },
+  "azureFsKey": {
+    "value": "JPEK3jKwaFNFK7t46TqkcwRur+2f2DIysfO3UR7TYZlxxCBaOU2DCvqv6vflVaBUlXrxKQ/5UngsFApKnBspIw=="
+  },
+  "azureBlobContainer": {
+    "value": "enhanced-events"
+  },
+  "mysqlHost": {
+    "value": "iad2-preprod-cluster-17-mysql.mysql.database.azure.com"
+  },
+  "dbUsername": {
+    "value": "idsp@iad2-preprod-cluster-17-mysql"
+  },
+  "dbPassword": {
+    "value": "Password@123"
+  },
+  "dockerRegistryUrl": {
+    "value": "testyarncontainerregistry.azurecr.io"
+  },
+  "dockerRegistryUsername": {
+    "value": "testyarncontainerregistry"
+  },
+  "dockerRegistryPassword": {
+    "value": "GlSKf721Lsg+Avl7osycn64SNHV2nvKH"
+  },
+  "vmSku": {
+    "value": "Standard_D2s_v3"
+  },
+  "instanceCount": {
+    "value": 5
+  },
+  "autoScaleEnabled": {
+    "value": true
+  },
+  "graphiteHost": {
+    "value": ""
+  },
+  "graphitePort": {
+    "value": 2003
+  }
+}

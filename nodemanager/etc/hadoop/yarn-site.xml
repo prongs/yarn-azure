@@ -15,4 +15,16 @@
 		<name>yarn.log-aggregation-enable</name>
 		<value>true</value>
 	</property>
+  <property>
+    <name>mapreduce.jobhistory.address</name>
+    <value>YARN_HOSTNAME:10020</value>
+  </property>
+  <property>
+    <name>mapreduce.jobhistory.webapp.address</name>
+    <value>YARN_HOSTNAME:19888</value>
+  </property>
+  <property>
+  	<name>yarn.nodemanager.vmem-pmem-ratio</name>
+  	<value>4</value>
+  </property>
 </configuration>	

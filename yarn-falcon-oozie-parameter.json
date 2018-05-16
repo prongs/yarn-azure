@@ -1,0 +1,68 @@
+{
+  "location": {
+    "value": "eastus2"
+  },
+  "vmName": {
+    "value": "falcon-test-9"
+  },
+  "adminUsername": {
+    "value": "idsp"
+  },
+  "adminPassword": {
+    "value": "Password@123"
+  },
+  "sshUserName": {
+    "value": "idsp"
+  },
+  "sshPassword": {
+    "value": "Password@123"
+  },
+  "ubuntuOSVersion": {
+    "value": "16.04.0-LTS"
+  },
+  "virtualNetworkResourceGroupName": {
+    "value": "network-rg-iad2-preprod"
+  },
+  "virtualNetworkName": {
+    "value": "vnet-iad2-preprod"
+  },
+  "subnetName": {
+    "value": "evserv-subnet-iad2-preprod"
+  },
+  "azureFsProtocol": {
+    "value": "wasb"
+  },
+  "azureBlobEndpoint": {
+    "value": "idspblob"
+  },
+  "azureFsKey": {
+    "value": "JPEK3jKwaFNFK7t46TqkcwRur+2f2DIysfO3UR7TYZlxxCBaOU2DCvqv6vflVaBUlXrxKQ/5UngsFApKnBspIw=="
+  },
+  "azureBlobContainer": {
+    "value": "enhanced-events"
+  },
+  "dockerRegistryUrl": {
+    "value": "testyarncontainerregistry.azurecr.io"
+  },
+  "dockerRegistryUsername": {
+    "value": "testyarncontainerregistry"
+  },
+  "dockerRegistryPassword": {
+    "value": "GlSKf721Lsg+Avl7osycn64SNHV2nvKH"
+  },
+  "dockerImagesToRun": {
+    "value": "oozie falcon"
+  },
+  "dockerEnvironment": {
+    "value": "MYSQL_HOST=iad2-preprod-cluster-3-mysql.mysql.database.azure.com FALCON_DB_USERNAME=idsp@iad2-preprod-cluster-3-mysql FALCON_DB_PASSWORD=Password@123 OOZIE_DB_USERNAME=idsp@iad2-preprod-cluster-3-mysql OOZIE_DB_PASSWORD=Password@123 RM_HOST=iad2-preprod-cluster-17-yarn"
+  },
+  "vmSku": {
+    "value": "Standard_A1"
+  },
+  "graphiteHost": {
+    "value": ""
+  },
+  "graphitePort": {
+    "value": 2003
+  }
+}

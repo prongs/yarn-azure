@@ -1,0 +1,503 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "String",
+      "metadata": {
+        "description": "The location of the Yarn cluster to create."
+      }
+    },
+    "clusterName": {
+      "type": "String",
+      "metadata": {
+        "description": "The name of the Yarn cluster to create."
+      }
+    },
+    "adminUsername": {
+      "defaultValue": "platform",
+      "type": "String",
+      "metadata": {
+        "description": "These credentials can be used to submit jobs to the cluster and to log into cluster dashboards."
+      }
+    },
+    "adminPassword": {
+      "type": "SecureString",
+      "metadata": {
+        "description": "The password must be at least 10 characters in length and must contain at least one digit, one non-alphanumeric character, and one upper or lower case letter."
+      }
+    },
+    "ubuntuOSVersion": {
+      "defaultValue": "16.04.0-LTS",
+      "allowedValues": [
+        "12.04.5-LTS",
+        "14.04.5-LTS",
+        "15.10",
+        "16.04.0-LTS"
+      ],
+      "type": "String",
+      "metadata": {
+        "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
+      }
+    },
+    "existingVNETRGName": {
+      "type": "String",
+      "metadata": {
+        "description": "Name of the resource group in which vnet exists"
+      }
+    },
+    "existingVNETName": {
+      "type": "String",
+      "metadata": {
+        "description": "Name of the Existing VNET in which cluster is to be created."
+      }
+    },
+    "existingSubnetName": {
+      "defaultValue": "default",
+      "type": "String",
+      "metadata": {
+        "description": "Subnet to use for this cluster. Subnet should be part of the above vnet."
+      }
+    },
+    "azureFsProtocol": {
+      "defaultValue": "wasbs",
+      "type": "String",
+      "metadata": {
+        "description": "The Azure FS protocol: wasb/wasbs."
+      }
+    },
+    "azureBlobResourceGroup": {
+      "type": "String",
+      "metadata": {
+        "description": "The Resource group to which the storage account belongs to."
+      }
+    },
+    "azureBlobEndpoint": {
+      "type": "String",
+      "metadata": {
+        "description": "The Azure blob endpoint."
+      }
+    },
+    "azureFsKey": {
+      "type": "SecureString",
+      "metadata": {
+        "description": "The key of the default storage account."
+      }
+    },
+    "azureBlobContainer": {
+      "type": "String",
+      "metadata": {
+        "description": "The name of the existing Azure blob storage container."
+      }
+    },
+    "mysqlHost": {
+      "type": "String",
+      "metadata": {
+        "description": "The name of the existing mysql host."
+      }
+    },
+    "dbUsername": {
+      "type": "String",
+      "metadata": {
+        "description": "The username of the existing mysql db."
+      }
+    },
+    "dbPassword": {
+      "type": "String",
+      "metadata": {
+        "description": "The username of the existing mysql db."
+      }
+    },
+    "dockerRegistryUrl": {
+      "defaultValue": "docker.io",
+      "type": "String",
+      "metadata": {
+        "description": "If deploying via docker, The registry url."
+      }
+    },
+    "dockerRegistryUsername": {
+      "defaultValue": "",
+      "type": "String",
+      "metadata": {
+        "description": "If deploying via docker, Username to connect to docker registry."
+      }
+    },
+    "dockerRegistryPassword": {
+      "defaultValue": "",
+      "type": "SecureString",
+      "metadata": {
+        "description": "If deploying via docker, Password to connect to docker registry."
+      }
+    },
+    "vmSku": {
+      "defaultValue": "Standard_A1",
+      "type": "String",
+      "metadata": {
+        "description": "SKU of Worker nodes."
+      }
+    },
+    "instanceCount": {
+      "defaultValue": 5,
+      "maxValue": 100,
+      "type": "Int",
+      "metadata": {
+        "description": "Initial Number of Worker nodes."
+      }
+    },
+    "autoScaleEnabled": {
+      "defaultValue": true,
+      "type": "Bool",
+      "metadata": {
+        "description": "Enable Autoscale for Worker Nodes?"
+      }
+    },
+    "graphiteHost": {
+      "defaultValue": "",
+      "type": "String",
+      "metadata": {
+        "description": "Graphite endpoint host name (optional)"
+      }
+    },
+    "graphitePort": {
+      "defaultValue": 2003,
+      "type": "Int",
+      "metadata": {
+        "description": "Graphite endpoint port (optional)"
+      }
+    }
+  },
+  "variables": {
+    "imagePublisher": "Canonical",
+    "imageOffer": "UbuntuServer",
+    "subnetName": "[parameters('existingSubnetName')]",
+    "vmName": "MyUbuntuVM",
+    "vmSize": "[parameters('vmSku')]",
+    "yarnVMName": "[concat(parameters('clusterName'),'-yarn')]",
+    "yarnNicName": "[concat(variables('yarnVMName'),'-nic')]",
+    "yarnIPConfigName": "[concat(variables('yarnVMName'), '-ipconfig')]",
+    "falconVMName": "[concat(parameters('clusterName'),'-falcon')]",
+    "falconNicName": "[concat(variables('falconVMName'),'-nic')]",
+    "falconIPConfigName": "[concat(variables('falconVMName'), '-ipconfig')]",
+    "dockerImagesToRunOnFalconVM": "oozie falcon",
+    "virtualNetworkName": "[parameters('existingVNETName')]",
+    "vnetID": "[resourceId(parameters('existingVNETRGName'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
+    "storageAccountType": "Standard_LRS",
+    "osType": {
+      "publisher": "[variables('imagePublisher')]",
+      "offer": "[variables('imageOffer')]",
+      "sku": "[parameters('ubuntuOSVersion')]",
+      "version": "latest"
+    },
+    "imageReference": "[variables('osType')]",
+    "nodemanagerVMName": "[concat(parameters('clusterName'), '-nodemanager')]",
+    "nodemanagerNicName": "[concat(variables('nodemanagerVMName'),'-nic')]",
+    "nodemanagerIPConfigName": "[concat(variables('nodemanagerVMName'), '-ipconfig')]",
+    "nodemanagerVMAutoscaleName": "[concat(variables('nodemanagerVMName'), '-autoscale')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('yarnNicName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[variables('yarnIPConfigName')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('yarnVMName')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('location')]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('yarnVMName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[parameters('ubuntuOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "fromImage",
+            "name": "osdisk",
+            "vhd": {
+              "uri": "[concat(reference(resourceId(parameters('azureBlobResourceGroup'), 'Microsoft.Storage/storageAccounts/', parameters('azureBlobEndpoint')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob, 'vhds/', 'osdisk', variables('yarnVMName'), '.vhd')]"
+            },
+            "caching": "ReadWrite"
+          },
+          "dataDisks": []
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('yarnNicName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('yarnVMName'), '/', 'yarn-install-and-start-script')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
+          ],
+          "commandToExecute": "[concat('bash -x bootstrap.sh ', 'docker', ' resourcemanager HOSTNAME=', reference(resourceId('Microsoft.Network/networkInterfaces',variables('yarnNicName')),providers('Microsoft.Network', 'networkInterfaces').apiVersions[0]).ipConfigurations[0].properties.privateIPAddress, ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' DOCKER_REGISTRY_URL=', parameters('dockerRegistryUrl'), ' DOCKER_REGISTRY_USERNAME=', parameters('dockerRegistryUsername'), ' DOCKER_REGISTRY_PASSWORD=', parameters('dockerRegistryPassword'))]"
+        }
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('yarnVMName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "sku": {
+        "name": "[parameters('vmSku')]",
+        "tier": "Standard",
+        "capacity": "[parameters('instanceCount')]"
+      },
+      "name": "[variables('nodemanagerVMName')]",
+      "apiVersion": "2017-03-30",
+      "location": "[parameters('location')]",
+      "properties": {
+        "overprovision": "true",
+        "upgradePolicy": {
+          "mode": "Manual"
+        },
+        "virtualMachineProfile": {
+          "storageProfile": {
+            "osDisk": {
+              "createOption": "FromImage"
+            },
+            "imageReference": "[variables('imageReference')]"
+          },
+          "osProfile": {
+            "computerNamePrefix": "[variables('nodemanagerVMName')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]"
+          },
+          "networkProfile": {
+            "networkInterfaceConfigurations": [
+              {
+                "name": "[variables('nodemanagerNicName')]",
+                "properties": {
+                  "primary": true,
+                  "ipConfigurations": [
+                    {
+                      "name": "[variables('nodemanagerIPConfigName')]",
+                      "properties": {
+                        "subnet": {
+                          "id": "[variables('subnetRef')]"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "extensionProfile": {
+            "extensions": [
+              {
+                "name": "runNodemanager",
+                "properties": {
+                  "publisher": "Microsoft.Azure.Extensions",
+                  "type": "CustomScript",
+                  "typeHandlerVersion": "2.0",
+                  "autoUpgradeMinorVersion": true,
+                  "settings": {
+                    "fileUris": [
+                      "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
+                    ],
+                    "commandToExecute": "[concat('bash -x bootstrap.sh ', 'docker', ' nodemanager NODE_HOSTNAME=0.0.0.0 YARN_HOSTNAME=', reference(resourceId('Microsoft.Network/networkInterfaces',variables('yarnNicName')),providers('Microsoft.Network', 'networkInterfaces').apiVersions[0]).ipConfigurations[0].properties.privateIPAddress, ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' DOCKER_REGISTRY_URL=', parameters('dockerRegistryUrl'), ' DOCKER_REGISTRY_USERNAME=', parameters('dockerRegistryUsername'), ' DOCKER_REGISTRY_PASSWORD=', parameters('dockerRegistryPassword'))]"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Insights/autoscaleSettings",
+      "name": "[variables('nodemanagerVMAutoscaleName')]",
+      "apiVersion": "2015-04-01",
+      "location": "[parameters('location')]",
+      "properties": {
+        "name": "[variables('nodemanagerVMAutoscaleName')]",
+        "targetResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('nodemanagerVMName'))]",
+        "enabled": "[parameters('autoScaleEnabled')]",
+        "profiles": [
+          {
+            "name": "Profile1",
+            "capacity": {
+              "minimum": "1",
+              "maximum": "10",
+              "default": "1"
+            },
+            "rules": [
+              {
+                "metricTrigger": {
+                  "metricName": "Percentage CPU",
+                  "metricNamespace": "",
+                  "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('nodemanagerVMName'))]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT5M",
+                  "timeAggregation": "Average",
+                  "operator": "GreaterThan",
+                  "threshold": 60
+                },
+                "scaleAction": {
+                  "direction": "Increase",
+                  "type": "ChangeCount",
+                  "value": "1",
+                  "cooldown": "PT1M"
+                }
+              },
+              {
+                "metricTrigger": {
+                  "metricName": "Percentage CPU",
+                  "metricNamespace": "",
+                  "metricResourceUri": "[concat('/subscriptions/',subscription().subscriptionId, '/resourceGroups/',  resourceGroup().name, '/providers/Microsoft.Compute/virtualMachineScaleSets/', variables('nodemanagerVMName'))]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT5M",
+                  "timeAggregation": "Average",
+                  "operator": "LessThan",
+                  "threshold": 30
+                },
+                "scaleAction": {
+                  "direction": "Decrease",
+                  "type": "ChangeCount",
+                  "value": "1",
+                  "cooldown": "PT5M"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachineScaleSets/', variables('nodemanagerVMName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('falconNicName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[variables('falconIPConfigName')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('falconVMName')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('location')]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('falconVMName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[parameters('ubuntuOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "fromImage",
+            "name": "osdisk",
+            "vhd": {
+              "uri": "[concat(reference(resourceId(parameters('azureBlobResourceGroup'), 'Microsoft.Storage/storageAccounts/', parameters('azureBlobEndpoint')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob, 'vhds/', 'osdisk', variables('falconVMName'), '.vhd')]"
+            },
+            "caching": "ReadWrite"
+          },
+          "dataDisks": []
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('falconNicName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('falconVMName'), '/', 'install-and-start-script')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
+          ],
+          "commandToExecute": "[concat('bash -x bootstrap.sh docker ', variables('dockerImagesToRunOnFalconVM'), ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' DOCKER_REGISTRY_URL=', parameters('dockerRegistryUrl'), ' DOCKER_REGISTRY_USERNAME=', parameters('dockerRegistryUsername'), ' DOCKER_REGISTRY_PASSWORD=', parameters('dockerRegistryPassword'), ' MYSQL_HOST=', parameters('mysqlHost'), ' FALCON_DB_USERNAME=', parameters('dbUsername'), ' FALCON_DB_PASSWORD=', parameters('dbPassword'), ' OOZIE_DB_USERNAME=', parameters('dbUsername'), ' OOZIE_DB_PASSWORD=', parameters('dbPassword'), ' YARN_HOSTNAME=', reference(resourceId('Microsoft.Network/networkInterfaces',variables('yarnNicName')),providers('Microsoft.Network', 'networkInterfaces').apiVersions[0]).ipConfigurations[0].properties.privateIPAddress)]"
+        }
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('falconVMName'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "resourceManager": {
+      "type": "String",
+      "value": "[resourceId('Microsoft.Network/virtualMachines',variables('yarnVMName'))]"
+    },
+    "falconMachine": {
+      "type": "String",
+      "value": "[resourceId('Microsoft.Network/virtualMachines',variables('falconVMName'))]"
+    }
+  }
+}

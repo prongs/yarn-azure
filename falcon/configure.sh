@@ -23,10 +23,10 @@ echo "after mysql"
 sed -i 's/AZURE_FS_PROTOCOL/'$AZURE_FS_PROTOCOL'/' entities/clusters/local.xml
 sed -i 's/AZURE_BLOB_CONTAINER/'$AZURE_BLOB_CONTAINER'/' entities/clusters/local.xml
 sed -i 's/AZURE_BLOB_ENDPOINT/'$AZURE_BLOB_ENDPOINT'/' entities/clusters/local.xml
-sed -i 's/RM_HOST/'$RM_HOST'/' entities/clusters/local.xml
-if [ -z "$RM_PORT" ]; then
-	RM_PORT=8032
+sed -i 's/YARN_HOSTNAME/'$YARN_HOSTNAME'/' entities/clusters/local.xml
+if [ -z "$YARN_PORT" ]; then
+	YARN_PORT=8032
 fi
-sed -i 's/RM_PORT/'$RM_PORT'/' entities/clusters/local.xml
+sed -i 's/YARN_PORT/'$YARN_PORT'/' entities/clusters/local.xml
 sed -i 's/HOSTNAME/'$HOSTNAME'/' entities/clusters/local.xml
 
