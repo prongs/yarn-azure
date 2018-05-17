@@ -103,7 +103,7 @@
       }
     },
     "dbPassword": {
-      "type": "String",
+      "type": "SecureString",
       "metadata": {
         "description": "The username of the existing mysql db."
       }
@@ -258,7 +258,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('yarnVMName'), '/', 'yarn-install-and-start-script')]",
-      "apiVersion": "2015-05-01-preview",
+      "apiVersion": "2017-12-01",
       "location": "[parameters('location')]",
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -275,6 +275,24 @@
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('yarnVMName'))]"
       ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2017-12-01",
+      "name": "[concat(variables('yarnVMName'),'/', 'ManagedIdentityExtensionForLinux')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('yarnVMName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.ManagedIdentity",
+        "type": "ManagedIdentityExtensionForLinux",
+        "typeHandlerVersion": "1.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "port": 50342
+        }
+      }
     },
     {
       "type": "Microsoft.Compute/virtualMachineScaleSets",
@@ -337,6 +355,19 @@
                       "http://raw.githubusercontent.com/prongs/yarn-azure/master/bootstrap.sh"
                     ],
                     "commandToExecute": "[concat('bash -x bootstrap.sh ', 'docker', ' nodemanager NODE_HOSTNAME=0.0.0.0 YARN_HOSTNAME=', reference(resourceId('Microsoft.Network/networkInterfaces',variables('yarnNicName')),providers('Microsoft.Network', 'networkInterfaces').apiVersions[0]).ipConfigurations[0].properties.privateIPAddress, ' AZURE_BLOB_CONTAINER=', parameters('azureBlobContainer'), ' AZURE_BLOB_ENDPOINT=', parameters('azureBlobEndpoint'), ' AZURE_FS_PROTOCOL=', parameters('azureFsProtocol'), ' AZURE_FS_KEY=', parameters('azureFsKey'), ' GRAPHITE_HOST=', parameters('graphiteHost'), ' GRAPHITE_PORT=', parameters('graphitePort'), ' DOCKER_REGISTRY_URL=', parameters('dockerRegistryUrl'), ' DOCKER_REGISTRY_USERNAME=', parameters('dockerRegistryUsername'), ' DOCKER_REGISTRY_PASSWORD=', parameters('dockerRegistryPassword'))]"
+                  }
+                }
+              },
+              {
+                "name": "msi",
+                "location": "[parameters('location')]",
+                "properties": {
+                  "publisher": "Microsoft.ManagedIdentity",
+                  "type": "ManagedIdentityExtensionForLinux",
+                  "typeHandlerVersion": "1.0",
+                  "autoUpgradeMinorVersion": true,
+                  "settings": {
+                    "port": 50342
                   }
                 }
               }
@@ -488,6 +519,24 @@
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('falconVMName'))]"
       ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2017-12-01",
+      "name": "[concat(variables('falconVMName'),'/', 'ManagedIdentityExtensionForLinux')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('falconVMName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.ManagedIdentity",
+        "type": "ManagedIdentityExtensionForLinux",
+        "typeHandlerVersion": "1.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "port": 50342
+        }
+      }
     }
   ],
   "outputs": {

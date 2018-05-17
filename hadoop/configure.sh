@@ -18,6 +18,15 @@ sed -i s/HOSTNAME/$HOSTNAME/ $HADOOP_CONF_DIR/yarn-site.xml
 sed -i s/YARN_HOSTNAME/$YARN_HOSTNAME/ $HADOOP_CONF_DIR/mapred-site.xml
 sed -i s/HOSTNAME/$HOSTNAME/ $HADOOP_CONF_DIR/mapred-site.xml
 
+#memory and cores
+
+MEMORY=`cat /proc/meminfo | grep MemTotal | awk '{printf("%.0f\n", 0.9*$2/1024)}'`
+CORES=`nproc`
+sed -i s/MEMORY/$MEMORY/ $HADOOP_HOME/etc/hadoop/mapred-site.xml
+sed -i s/CORES/$CORES/ $HADOOP_HOME/etc/hadoop/mapred-site.xml
+sed -i s/MEMORY/$MEMORY/ $HADOOP_HOME/etc/hadoop/yarn-site.xml
+sed -i s/CORES/$CORES/ $HADOOP_HOME/etc/hadoop/yarn-site.xml
+
 # # METRICS
 if [ -n "$GRAPHITE_HOST" ]; then
 	sed 's/GRAPHITE_HOST/'$GRAPHITE_HOST'/; s/GRAPHITE_PORT/'$GRAPHITE_PORT'/' $HADOOP_CONF_DIR/hadoop-metrics2.graphite.properties > $HADOOP_CONF_DIR/hadoop-metrics2.properties

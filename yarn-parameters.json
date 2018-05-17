@@ -3,10 +3,10 @@
     "value": "eastus2"
   },
   "clusterName": {
-    "value": "iad2-preprod-cluster-29"
+    "value": "data-processing-cluster-v0001"
   },
   "adminUsername": {
-    "value": "idsp"
+    "value": "platform"
   },
   "adminPassword": {
     "value": "Password@123"
@@ -39,10 +39,10 @@
     "value": "enhanced-events"
   },
   "mysqlHost": {
-    "value": "iad2-preprod-cluster-17-mysql.mysql.database.azure.com"
+    "value": "data-processing-database.mysql.database.azure.com"
   },
   "dbUsername": {
-    "value": "idsp@iad2-preprod-cluster-17-mysql"
+    "value": "platform@data-processing-database"
   },
   "dbPassword": {
     "value": "Password@123"
@@ -57,7 +57,7 @@
     "value": "GlSKf721Lsg+Avl7osycn64SNHV2nvKH"
   },
   "vmSku": {
-    "value": "Standard_D2s_v3"
+    "value": "Standard_D4s_v3"
   },
   "instanceCount": {
     "value": 5
