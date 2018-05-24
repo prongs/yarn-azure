@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-apt-get -y update
 DEPLOYMENT_METHOD=$1 # docker/native
 shift
 # Workaround
