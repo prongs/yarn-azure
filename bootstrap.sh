@@ -34,7 +34,7 @@ if [ $DEPLOYMENT_METHOD == "docker" ]; then
 		echo "Started image $IMAGE"
 	done
 else
-	until apt-get -y install -y git wget curl telnet
+	until apt-get update && apt-get -y install -y git wget curl telnet
 	do
 	    echo "Trying again for dpkg lock"
 	    sleep 2
