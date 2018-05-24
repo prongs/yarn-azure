@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 apt-get -y update
 DEPLOYMENT_METHOD=$1 # docker/native
 shift
@@ -5,7 +7,11 @@ shift
 # echo "127.0.0.1 `hostname`" >> /etc/hosts
 
 if [ $DEPLOYMENT_METHOD == "docker" ]; then
-	apt-get -y update && apt-get -y install docker.io
+	until apt-get -y update && apt-get -y install docker.io
+	do
+	    echo "Trying again for dpkg lock"
+	    sleep 2
+	done
 	declare -a images
 	for i in "$@"
 	do
@@ -29,7 +35,11 @@ if [ $DEPLOYMENT_METHOD == "docker" ]; then
 		echo "Started image $IMAGE"
 	done
 else
-	apt-get -y install -y git wget curl telnet
+	until apt-get -y install -y git wget curl telnet
+	do
+	    echo "Trying again for dpkg lock"
+	    sleep 2
+    done
 	git clone https://github.com/prongs/yarn-azure.git
 	git checkout master
 	cd yarn-azure
